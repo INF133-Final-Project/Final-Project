@@ -5,3 +5,20 @@
 body {
   background-color: #1f2937; /* Tailwind's bg-gray-800 */
 }
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #4a4a4a;
+  color: #ffffff;
+  border: none;
+  font-size: 16px;
+  text-align: center;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%204%205%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M2%200L0%202h4L2%200zM2%205L0%203h4L2%205z%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+}

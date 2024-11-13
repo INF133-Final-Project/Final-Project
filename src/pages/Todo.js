@@ -20,6 +20,7 @@ const Todo = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state for data fetch
+  const [errorModal, setErrorModal] = useState(false);
 
   const [user] = useAuthState(auth);
 
@@ -45,6 +46,10 @@ const Todo = () => {
   const closeModal = () => {
     setIsAnimating(false);
     setTimeout(() => setIsModalOpen(false), 700);
+  };
+
+  const closeErrorModal = () => {
+    setErrorModal(false);
   };
 
   const addOrEditTodo = async () => {
@@ -80,7 +85,7 @@ const Todo = () => {
       }
       closeModal();
     } else {
-      alert("Please fill in all fields.");
+      setErrorModal(true);
     }
   };
 
@@ -283,6 +288,20 @@ const Todo = () => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {errorModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-red-600 p-6 rounded-lg shadow-lg w-3/4 sm:w-1/2 text-center text-white">
+            <h2 className="text-2xl font-semibold mb-4">Error</h2>
+            <p>Please fill in all fields.</p>
+            <button
+              onClick={closeErrorModal}
+              className="mt-4 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
