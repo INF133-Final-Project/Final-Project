@@ -79,17 +79,8 @@ const Todo = () => {
           todos[editIndex].id
         );
         await updateDoc(todoRef, todoData);
-        setTodos((prevTodos) => {
-          const updatedTodos = [...prevTodos];
-          updatedTodos[editIndex] = { ...todoData, id: todos[editIndex].id };
-          return updatedTodos;
-        });
       } else {
-        const docRef = await addDoc(
-          collection(db, "users", user.uid, "todos"),
-          todoData
-        );
-        setTodos((prevTodos) => [...prevTodos, { ...todoData, id: docRef.id }]);
+        await addDoc(collection(db, "users", user.uid, "todos"), todoData);
       }
       closeModal();
     } else {
@@ -235,13 +226,18 @@ const Todo = () => {
                       checked={todo.completed}
                       onClick={(e) => e.stopPropagation()}
                       onChange={() => toggleComplete(index)}
-                      className="appearance-none h-5 w-5 border-2 border-gray-400 rounded-full checked:bg-purple-600 transition duration-200 mr-3 cursor-pointer"
+                      className="appearance-none h-5 w-5 border-2 border-gray-400 rounded-full checked:bg-purple-600 transition duration-200 mr-3 cursor-pointer flex-shrink-0"
                     />
-                    <div className="flex flex-col ml-2 ">
+                    <div className="flex flex-col ml-2 flex-grow">
                       <span
                         className={`${
                           todo.completed ? "line-through text-gray-400" : ""
                         }`}
+                        style={{
+                          overflowWrap: "break-word",
+                          wordBreak: "break-word",
+                          maxWidth: "100%",
+                        }}
                       >
                         {todo.text}
                       </span>
