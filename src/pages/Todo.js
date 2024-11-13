@@ -13,13 +13,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 const Todo = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
-  const [todoDate, setTodoDate] = useState("");
-  const [todoTime, setTodoTime] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [priority, setPriority] = useState("Low");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state for data fetch
+  const [loading, setLoading] = useState(true);
   const [errorModal, setErrorModal] = useState(false);
 
   const [user] = useAuthState(auth);
@@ -28,14 +28,14 @@ const Todo = () => {
     if (index !== null) {
       const todo = todos[index];
       setNewTodo(todo.text);
-      setTodoDate(todo.date);
-      setTodoTime(todo.time);
+      setStartDate(todo.start);
+      setEndDate(todo.end);
       setPriority(todo.priority);
       setEditIndex(index);
     } else {
       setNewTodo("");
-      setTodoDate("");
-      setTodoTime("");
+      setStartDate("");
+      setEndDate("");
       setPriority("Low");
       setEditIndex(null);
     }
@@ -53,11 +53,11 @@ const Todo = () => {
   };
 
   const addOrEditTodo = async () => {
-    if (newTodo.trim() && todoDate && todoTime && user) {
+    if (newTodo.trim() && startDate && endDate && user) {
       const todoData = {
         text: newTodo,
-        date: todoDate,
-        time: todoTime,
+        start: startDate,
+        end: endDate,
         priority,
         completed: false,
       };
@@ -105,7 +105,6 @@ const Todo = () => {
     const todo = updatedTodos[index];
     todo.completed = !todo.completed;
 
-    // Update to Firestore
     if (user) {
       const todoRef = doc(db, "users", user.uid, "todos", todo.id);
       await updateDoc(todoRef, { completed: todo.completed });
@@ -156,7 +155,7 @@ const Todo = () => {
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
-        setLoading(false); // End loading state once data is fetched
+        setLoading(false);
       }
     };
     fetchTodos();
@@ -177,42 +176,60 @@ const Todo = () => {
       <div className="w-full max-w-2xl mb-6">
         {todos.length > 0 ? (
           <ul className="space-y-4">
-            {todos.map((todo, index) => (
-              <li
-                key={index}
-                onClick={() => openModal(index)}
-                className={`bg-gray-700 p-3 rounded-md shadow-md flex flex-col border-r-8 ${getBorderColor(
-                  todo.priority
-                )} cursor-pointer hover:bg-gray-600 transition duration-200`}
-              >
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={todo.completed}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={() => toggleComplete(index)}
-                    className="appearance-none h-5 w-5 border-2 border-gray-400 rounded-full checked:bg-purple-600 transition duration-200 mr-3"
-                  />
-                  <div className="flex flex-col ml-2 ">
-                    <span
-                      className={`${
-                        todo.completed ? "line-through text-gray-400" : ""
-                      }`}
-                    >
-                      {todo.text}
-                    </span>
-                    <p className="text-xs text-gray-400 mt-1 ">
-                      Due: {todo.date} at {todo.time} -{" "}
+            {todos.map((todo, index) => {
+              const startDate = new Date(todo.start).toLocaleString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              const endDate = new Date(todo.end).toLocaleString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              return (
+                <li
+                  key={index}
+                  onClick={() => openModal(index)}
+                  className={`bg-gray-700 p-3 rounded-md shadow-md flex flex-col border-r-8 ${getBorderColor(
+                    todo.priority
+                  )} cursor-pointer hover:bg-gray-600 transition duration-200`}
+                >
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={todo.completed}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={() => toggleComplete(index)}
+                      className="appearance-none h-5 w-5 border-2 border-gray-400 rounded-full checked:bg-purple-600 transition duration-200 mr-3 cursor-pointer"
+                    />
+                    <div className="flex flex-col ml-2 ">
                       <span
-                        className={`font-bold ${getFontColor(todo.priority)} `}
+                        className={`${
+                          todo.completed ? "line-through text-gray-400" : ""
+                        }`}
                       >
-                        {todo.priority}
+                        {todo.text}
                       </span>
-                    </p>
+                      <p className="text-xs text-gray-400 mt-1 ">
+                        {startDate} ~ {endDate} /{" "}
+                        <span
+                          className={`font-bold ${getFontColor(
+                            todo.priority
+                          )} `}
+                        >
+                          {todo.priority}
+                        </span>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <p className="text-center text-gray-400">No todos yet</p>
@@ -244,15 +261,15 @@ const Todo = () => {
               className="w-full p-2 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             <input
-              type="date"
-              value={todoDate}
-              onChange={(e) => setTodoDate(e.target.value)}
+              type="datetime-local"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
               className="w-full p-2 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             <input
-              type="time"
-              value={todoTime}
-              onChange={(e) => setTodoTime(e.target.value)}
+              type="datetime-local"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
               className="w-full p-2 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             <select
