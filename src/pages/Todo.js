@@ -3,10 +3,10 @@ import { db, auth } from "../firebaseConfig";
 import {
   collection,
   addDoc,
-  getDocs,
   updateDoc,
   deleteDoc,
   doc,
+  onSnapshot,
 } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -20,7 +20,6 @@ const Todo = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [errorModal, setErrorModal] = useState(false);
   const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
 
   const [user] = useAuthState(auth);
@@ -147,28 +146,50 @@ const Todo = () => {
         return "text-gray-500";
     }
   };
-
   useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        if (user) {
-          const userTodos = [];
-          const querySnapshot = await getDocs(
-            collection(db, "users", user.uid, "todos")
-          );
-          querySnapshot.forEach((doc) => {
-            userTodos.push({ id: doc.id, ...doc.data() });
-          });
-          setTodos(userTodos);
+    if (user) {
+      const todosRef = collection(db, "users", user.uid, "todos");
+
+      const unsubscribe = onSnapshot(
+        todosRef,
+        (snapshot) => {
+          const updatedTodos = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setTodos(updatedTodos);
+          setLoading(false);
+        },
+        (error) => {
+          console.error("Error fetching todos: ", error);
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTodos();
+      );
+      return () => unsubscribe();
+    }
   }, [user]);
+
+  // useEffect(() => {
+  //   const fetchTodos = async () => {
+  //     try {
+  //       if (user) {
+  //         const userTodos = [];
+  //         const querySnapshot = await getDocs(
+  //           collection(db, "users", user.uid, "todos")
+  //         );
+  //         querySnapshot.forEach((doc) => {
+  //           userTodos.push({ id: doc.id, ...doc.data() });
+  //         });
+  //         setTodos(userTodos);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchTodos();
+  // }, [user]);
 
   if (loading) {
     return (
