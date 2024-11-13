@@ -20,7 +20,8 @@ const Todo = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [errorModal, setErrorModal] = useState(false);
+  // const [errorModal, setErrorModal] = useState(false);
+  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
 
   const [user] = useAuthState(auth);
 
@@ -54,6 +55,14 @@ const Todo = () => {
 
   const addOrEditTodo = async () => {
     if (newTodo.trim() && startDate && endDate && user) {
+      if (new Date(startDate) > new Date(endDate)) {
+        setErrorModal({
+          isOpen: true,
+          message: "End time must be after the start time.",
+        });
+        return;
+      }
+
       const todoData = {
         text: newTodo,
         start: startDate,
@@ -85,7 +94,7 @@ const Todo = () => {
       }
       closeModal();
     } else {
-      setErrorModal(true);
+      setErrorModal({ isOpen: true, message: "Please fill in all fields." });
     }
   };
 
@@ -308,11 +317,11 @@ const Todo = () => {
           </div>
         </div>
       )}
-      {errorModal && (
+      {errorModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-red-600 p-6 rounded-lg shadow-lg w-3/4 sm:w-1/2 text-center text-white">
             <h2 className="text-2xl font-semibold mb-4">Error</h2>
-            <p>Please fill in all fields.</p>
+            <p>{errorModal.message}</p>
             <button
               onClick={closeErrorModal}
               className="mt-4 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
