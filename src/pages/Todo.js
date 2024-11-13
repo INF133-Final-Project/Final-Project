@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { db, auth } from "../firebaseConfig";
+import TodoCreateAndEditModal from "../components/TodoCreateAndEditModal";
+import ErrorModal from "../components/ErrorModal";
 import {
   collection,
   addDoc,
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  orderBy,
   onSnapshot,
 } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -137,12 +141,14 @@ const Todo = () => {
         return "text-gray-500";
     }
   };
+
   useEffect(() => {
     if (user) {
       const todosRef = collection(db, "users", user.uid, "todos");
+      const todosQuery = query(todosRef, orderBy("start")); // order by start time!
 
       const unsubscribe = onSnapshot(
-        todosRef,
+        todosQuery,
         (snapshot) => {
           const updatedTodos = snapshot.docs.map((doc) => ({
             id: doc.id,
@@ -156,31 +162,10 @@ const Todo = () => {
           setLoading(false);
         }
       );
+
       return () => unsubscribe();
     }
   }, [user]);
-
-  // useEffect(() => {
-  //   const fetchTodos = async () => {
-  //     try {
-  //       if (user) {
-  //         const userTodos = [];
-  //         const querySnapshot = await getDocs(
-  //           collection(db, "users", user.uid, "todos")
-  //         );
-  //         querySnapshot.forEach((doc) => {
-  //           userTodos.push({ id: doc.id, ...doc.data() });
-  //         });
-  //         setTodos(userTodos);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchTodos();
-  // }, [user]);
 
   if (loading) {
     return (
@@ -191,7 +176,7 @@ const Todo = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white px-4 sm:px-0">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white px-4 sm:px-0 pt-16">
       <h1 className="text-3xl font-bold mb-8">Todo List</h1>
 
       <div className="w-full max-w-2xl mb-6">
@@ -264,90 +249,33 @@ const Todo = () => {
 
       <button
         onClick={() => openModal()}
-        className="fixed bottom-8 right-8 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
+        className="fixed bottom-8 right-8 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-5 rounded-full shadow-lg transition duration-300"
       >
-        + Create
+        <span className="inline sm:hidden">+</span>
+        <span className="hidden sm:inline">+ Create</span>
       </button>
+      <TodoCreateAndEditModal
+        isOpen={isModalOpen}
+        isAnimating={isAnimating}
+        editIndex={editIndex}
+        newTodo={newTodo}
+        setNewTodo={setNewTodo}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        priority={priority}
+        setPriority={setPriority}
+        closeModal={closeModal}
+        addOrEditTodo={addOrEditTodo}
+        deleteTodo={deleteTodo}
+      />
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-700">
-          <div
-            className={`bg-gray-900 p-6 rounded-lg shadow-lg sm:w-3/4 w-full sm:mx-0 mx-4 text-center transform transition-all duration-700 ${
-              isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-90"
-            }`}
-          >
-            <h2 className="text-2xl font-semibold mb-4">
-              {editIndex !== null ? "Edit Todo" : "Add New Todo"}
-            </h2>
-            <input
-              type="text"
-              value={newTodo}
-              onChange={(e) => setNewTodo(e.target.value)}
-              placeholder="Enter Todo"
-              className="w-full p-2 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <input
-              type="datetime-local"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full p-2 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <input
-              type="datetime-local"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full p-2 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="w-full p-2 mb-4 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="Low">Low</option>
-              <option value="Med">Med</option>
-              <option value="High">High</option>
-            </select>
-            <div className="flex justify-end items-center space-x-2">
-              {editIndex !== null && (
-                <button
-                  onClick={deleteTodo}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-auto "
-                >
-                  Delete
-                </button>
-              )}
-              <div className="flex space-x-2">
-                <button
-                  onClick={closeModal}
-                  className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={addOrEditTodo}
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {errorModal.isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-red-600 p-6 rounded-lg shadow-lg w-3/4 sm:w-1/2 text-center text-white">
-            <h2 className="text-2xl font-semibold mb-4">Error</h2>
-            <p>{errorModal.message}</p>
-            <button
-              onClick={closeErrorModal}
-              className="mt-4 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <ErrorModal
+        isOpen={errorModal.isOpen}
+        message={errorModal.message}
+        closeErrorModal={closeErrorModal}
+      />
     </div>
   );
 };
