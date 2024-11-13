@@ -74,7 +74,7 @@ const NavBar = () => {
       {/* Dropdown Menu for Mobile with Animation */}
       <div
         className={`transition-all duration-700 ease-in-out overflow-hidden ${
-          isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+          isOpen ? "max-h-screen opacity-100 mb-4" : "max-h-0 opacity-0"
         } sm:hidden bg-gray-700 text-white flex flex-col items-center space-y-4`}
       >
         <NavLink
@@ -107,9 +107,7 @@ const NavBar = () => {
         <NavLink
           to="/budget"
           className={({ isActive }) =>
-            isActive
-              ? "text-purple-400 font-bold"
-              : "hover:text-purple-400 pb-4"
+            isActive ? "text-purple-400 font-bold" : "hover:text-purple-400"
           }
           onClick={() => setIsOpen(false)}
         >
