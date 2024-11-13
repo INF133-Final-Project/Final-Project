@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../../firebaseConfig";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, db } from "../firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -51,8 +51,8 @@ const SignUp = () => {
       );
       const user = userCredential.user;
 
-      // Set displayName in Firebase Authentication
-      await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+      // // Set displayName in Firebase Authentication
+      // await updateProfile(user, { displayName: `${firstName} ${lastName}` });
 
       // Save user information to Firestore
       await saveUserInfo(user.uid, firstName, lastName, email);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { auth } from "../../firebaseConfig";
-import { db } from "../../firebaseConfig";
+import { auth } from "../firebaseConfig";
+import { db } from "../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,6 @@ const Dashboard = () => {
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setUserName(`${userData.firstName} ${userData.lastName}`);
-        console.log("Name: ", userName);
       } else {
         console.log("No such document!");
       }
@@ -51,17 +50,19 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white">
-      {userName && (
-        <h2 className="text-3xl font-bold mb-6">Welcome, {userName}!</h2>
-      )}
-      <p className="text-lg">Email: {auth.currentUser?.email}</p>
-      <button
-        onClick={handleLogout}
-        className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded mt-6"
-      >
-        Logout
-      </button>
+    <div>
+      <div className="flex flex-col items-center justify-center min-h-screen text-white">
+        {userName && (
+          <h2 className="text-3xl font-bold mb-6">Welcome, {userName}!</h2>
+        )}
+        <p className="text-lg">Email: {auth.currentUser?.email}</p>
+        <button
+          onClick={handleLogout}
+          className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded mt-6"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };
