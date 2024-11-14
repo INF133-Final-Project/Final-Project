@@ -96,9 +96,9 @@ const Todo = () => {
     if (editIndex !== null && user) {
       const todoRef = doc(db, "users", user.uid, "todos", todos[editIndex].id);
       await deleteDoc(todoRef);
-      setTodos((prevTodos) =>
-        prevTodos.filter((_, index) => index !== editIndex)
-      );
+      // setTodos((prevTodos) =>
+      //   prevTodos.filter((_, index) => index !== editIndex)
+      // );
       closeModal();
     }
   };
@@ -113,7 +113,7 @@ const Todo = () => {
       await updateDoc(todoRef, { completed: todo.completed });
     }
 
-    setTodos(updatedTodos);
+    // setTodos(updatedTodos);
   };
 
   const getBorderColor = (priority) => {
