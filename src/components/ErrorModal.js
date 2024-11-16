@@ -5,7 +5,7 @@ const ErrorModal = ({ isOpen, message, closeErrorModal }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-red-600 p-6 rounded-lg shadow-lg w-3/4 sm:w-1/2 text-center text-white">
+      <div className="bg-red-600 p-6 rounded-lg shadow-lg sm:w-2/5 w-1/2 max-w-md text-center text-white">
         <h2 className="text-2xl font-semibold mb-4">Error</h2>
         <p>{message}</p>
         <button

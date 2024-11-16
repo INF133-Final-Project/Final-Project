@@ -86,7 +86,7 @@ const SignUp = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-white px-4 sm:px-0">
-      <h2 className="text-3xl font-bold mb-6">Sign Up</h2>
+      <h2 className="text-4xl font-black mb-6">Sign Up</h2>
       <form
         onSubmit={handleSignUp}
         className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-lg"
@@ -96,7 +96,7 @@ const SignUp = () => {
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           placeholder="First Name"
-          className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
+          className="w-full h-10 p-3 mb-4 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
           required
         />
         <input
@@ -104,7 +104,7 @@ const SignUp = () => {
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           placeholder="Last Name"
-          className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
+          className="w-full h-10 p-3 mb-4 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
           required
         />
         <input
@@ -112,7 +112,7 @@ const SignUp = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
+          className="w-full h-10 p-3 mb-4 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
           required
         />
         <input
@@ -120,7 +120,7 @@ const SignUp = () => {
           value={emailConfirm}
           onChange={(e) => setEmailConfirm(e.target.value)}
           placeholder="Confirm Email"
-          className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
+          className="w-full h-10 p-3 mb-4 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
           required
         />
         <input
@@ -128,7 +128,7 @@ const SignUp = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
+          className="w-full h-10 p-3 mb-4 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
           required
         />
         <input
@@ -136,12 +136,12 @@ const SignUp = () => {
           value={passwordConfirm}
           onChange={(e) => setPasswordConfirm(e.target.value)}
           placeholder="Confirm Password"
-          className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
+          className="w-full h-10 p-3 mb-4 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
           required
         />
         <button
           type="submit"
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded"
+          className="w-full h-11 bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 rounded"
         >
           Sign Up
         </button>
@@ -151,7 +151,7 @@ const SignUp = () => {
         Already have an account?{" "}
         <Link
           to="/login"
-          className="text-purple-400 hover:text-white transition duration-200"
+          className="text-orange-400 hover:text-orange-500 transition duration-200"
         >
           Log in
         </Link>

@@ -5,14 +5,9 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import NavBar from "./components/NavBar";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Todo from "./pages/Todo";
-import Note from "./pages/Note";
-import Budget from "./pages/Budget";
-import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebaseConfig";
@@ -30,7 +25,6 @@ function App() {
 
   return (
     <Router>
-      {user && <NavBar />}
       <Routes>
         <Route
           path="/"
@@ -43,38 +37,6 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/todo"
-          element={
-            <PrivateRoute>
-              <Todo />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/note"
-          element={
-            <PrivateRoute>
-              <Note />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/budget"
-          element={
-            <PrivateRoute>
-              <Budget />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
             </PrivateRoute>
           }
         />

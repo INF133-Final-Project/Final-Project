@@ -22,3 +22,27 @@ select {
   background-position: right 10px center;
   background-size: 10px;
 }
+
+.split {
+  display: flex;
+  height: 100vh;
+}
+
+.split > div {
+  overflow: auto;
+}
+
+.gutter {
+  background-color: #9ca3af;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+  width: 10px;
+  height: calc(100vh - 2.5rem);
+  margin: auto 0;
+  border-radius: 5px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==");
+  cursor: col-resize;
+}

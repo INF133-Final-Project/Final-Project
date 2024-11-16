@@ -42,7 +42,7 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-white px-4 sm:px-0">
-      <h2 className="text-3xl font-bold mb-6 text-center">Login</h2>
+      <h2 className="text-4xl font-black mb-6 text-center">Login</h2>
       <form
         onSubmit={handleLogin}
         className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-lg"
@@ -52,7 +52,7 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="w-full p-3 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full h-10 p-3 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
           required
         />
         <input
@@ -60,12 +60,12 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="w-full p-3 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full h-10 p-3 mb-4 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
           required
         />
         <button
           type="submit"
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded transition duration-200"
+          className="w-full h-11 bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 rounded transition duration-200"
         >
           Login
         </button>
@@ -75,7 +75,7 @@ const Login = () => {
         Don't have an account?{" "}
         <Link
           to="/signup"
-          className="text-purple-400 hover:text-white transition duration-200"
+          className="text-orange-400 hover:text-orange-500 transition duration-200"
         >
           Sign up
         </Link>

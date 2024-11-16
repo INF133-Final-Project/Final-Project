@@ -176,10 +176,13 @@ const Todo = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white px-4 sm:px-0 pt-16">
-      <h1 className="text-3xl font-bold mb-8">Todo List</h1>
+    <div
+      className="flex flex-col items-center justify-center rounded-lg bg-gray-400 mx-3 mt-5 text-gray-900 px-4 "
+      style={{ height: "calc(100vh - 4.5rem)" }}
+    >
+      <h1 className="text-4xl font-black mt-10 mb-5 text-white">Todo List</h1>
 
-      <div className="w-full max-w-2xl mb-6">
+      <div className="w-full max-w-2xl mb-5 h-full overflow-y-auto">
         {todos.length > 0 ? (
           <ul className="space-y-4">
             {todos.map((todo, index) => {
@@ -201,9 +204,9 @@ const Todo = () => {
                 <li
                   key={index}
                   onClick={() => openModal(index)}
-                  className={`bg-gray-700 p-3 rounded-md shadow-md flex flex-col border-r-8 ${getBorderColor(
+                  className={`bg-gray-100 p-3 rounded-md shadow-md flex flex-col border-r-8 ${getBorderColor(
                     todo.priority
-                  )} cursor-pointer hover:bg-gray-600 transition duration-200`}
+                  )} cursor-pointer hover:bg-gray-300 transition duration-200`}
                 >
                   <div className="flex items-center">
                     <input
@@ -211,7 +214,7 @@ const Todo = () => {
                       checked={todo.completed}
                       onClick={(e) => e.stopPropagation()}
                       onChange={() => toggleComplete(index)}
-                      className="appearance-none h-5 w-5 border-2 border-gray-400 rounded-full checked:bg-purple-600 transition duration-200 mr-3 cursor-pointer flex-shrink-0"
+                      className="appearance-none h-5 w-5 border-2 border-gray-400 rounded-full checked:bg-orange-400 transition duration-200 mr-3 cursor-pointer flex-shrink-0"
                     />
                     <div className="flex flex-col ml-2 flex-grow">
                       <span
@@ -226,7 +229,7 @@ const Todo = () => {
                       >
                         {todo.text}
                       </span>
-                      <p className="text-xs text-gray-400 mt-1 ">
+                      <p className="text-xs text-gray-500 mt-1 ">
                         {startDate} ~ {endDate} /{" "}
                         <span
                           className={`font-bold ${getFontColor(
@@ -249,7 +252,7 @@ const Todo = () => {
 
       <button
         onClick={() => openModal()}
-        className="fixed bottom-8 right-8 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-5 rounded-full shadow-lg transition duration-300"
+        className="fixed bottom-8 right-8 bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-5 rounded-full shadow-lg transition duration-300"
       >
         <span className="inline sm:hidden">+</span>
         <span className="hidden sm:inline">+ Create</span>
