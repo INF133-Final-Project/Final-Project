@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import Split from "react-split";
 import Overview from "./Overview";
 import Container from "../components/Container";
-import MobileContainer from "../components/MobileContainer";
 import checklist from "../assets/checklist.png";
 import profile from "../assets/profile.png";
 import userLogout from "../assets/userLogout.png";
@@ -99,7 +98,7 @@ const Dashboard = () => {
               className="bg-gray-400 my-5 mx-3 rounded-lg overflow-hidden"
               style={{ height: "calc(100vh - 2.5rem)" }}
             >
-              <Overview userName={userName} auth={auth} isSplit={split} />
+              <Overview isSplit={split} />
             </div>
             <div>
               <Container
@@ -117,7 +116,7 @@ const Dashboard = () => {
               className="bg-gray-400 my-5 ml-3 rounded-lg overflow-hidden flex-grow"
               style={{ height: "calc(100vh - 2.5rem)" }}
             >
-              <Overview userName={userName} auth={auth} />
+              <Overview />
             </div>
             <Sidebar />
           </div>
@@ -125,7 +124,7 @@ const Dashboard = () => {
         ;
       </div>
       <div className="md:hidden h-screen">
-        <MobileContainer
+        <Container
           toggleSplit={toggleSplit}
           handleLogout={handleLogout}
           userName={userName}
@@ -133,6 +132,7 @@ const Dashboard = () => {
           fetchUserData={fetchUserData}
         />
       </div>
+
       {/* Profile Modal */}
       <ProfileModal
         isOpen={isProfileModalOpen}

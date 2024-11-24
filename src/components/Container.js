@@ -6,6 +6,8 @@ import checklist from "../assets/checklist.png";
 import profile from "../assets/profile.png";
 import userLogout from "../assets/userLogout.png";
 import ProfileModal from "./ProfileModal";
+import Overview from "../pages/Overview";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const Container = ({
   toggleSplit,
@@ -15,10 +17,12 @@ const Container = ({
   fetchUserData,
 }) => {
   const [nav, setNav] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const handleNav = (navNumber) => {
     setNav(navNumber);
+    setIsOpen(false);
   };
 
   const toggleProfileModal = () => {
@@ -31,9 +35,19 @@ const Container = ({
     { id: 3, label: "Budget" },
   ];
 
+  const NavItem = ({ label, navNumber }) => (
+    <div
+      onClick={() => handleNav(navNumber)}
+      className="font-bold hover:text-orange-400 cursor-pointer"
+    >
+      {label}
+    </div>
+  );
+
   return (
     <div className="relative">
-      <header className="flex space-x-12 justify-center items-center mx-auto bg-gray-800 text-white sticky top-5 w-full z-10 h-8">
+      {/* Desktop Header */}
+      <header className="hidden md:flex space-x-12 justify-center items-center mx-auto bg-gray-800 text-white sticky top-5 w-full z-10 h-8">
         {navItems.map((item) => (
           <div
             key={item.id}
@@ -71,7 +85,55 @@ const Container = ({
           />
         </div>
       </header>
-      <div className="flex-1 overflow-y-auto">
+      {/* Mobile Header */}
+      <header className="flex px-5 justify-between items-end bg-gray-800 text-white sticky top-0 w-full z-10 h-10 md:hidden">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="text-white focus:outline-none"
+        >
+          {isOpen ? (
+            <XMarkIcon className="w-6 h-6" />
+          ) : (
+            <Bars3Icon className="w-6 h-6" />
+          )}
+        </button>
+        <div className="flex space-x-3">
+          <img
+            src={profile}
+            alt="profile"
+            className="h-6 w-6 cursor-pointer object-contain hover:scale-110 transition-transform duration-300"
+            onClick={toggleProfileModal}
+          />
+          <img
+            src={userLogout}
+            alt="userLogout"
+            className="h-6 w-6 cursor-pointer object-contain hover:scale-110 transition-transform duration-300"
+            onClick={handleLogout}
+          />
+        </div>
+      </header>
+
+      {/* Navigation Menu */}
+      <div
+        className={`transition-all duration-700 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        } bg-gray-800 text-white flex flex-col items-center space-y-4 md:hidden`}
+      >
+        <NavItem label="Dashboard" navNumber={0} />
+        <NavItem label="Tasks" navNumber={1} />
+        <NavItem label="Note" navNumber={2} />
+        <NavItem label="Budget" navNumber={3} />
+      </div>
+
+      <div className="flex-1 overflow-y-auto -mt-2 md:mt-0">
+        {nav === 0 && (
+          <div
+            className="flex flex-col items-center justify-center rounded-lg bg-gray-400 mx-3 mt-5"
+            style={{ height: "calc(100vh - 4.5rem)" }}
+          >
+            <Overview userName={userName} auth={auth} />
+          </div>
+        )}
         {nav === 1 && <Todo />}
         {nav === 2 && <Note />}
         {nav === 3 && <Budget />}
