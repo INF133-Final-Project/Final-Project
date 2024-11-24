@@ -44,7 +44,7 @@ const Todo = () => {
       setEditIndex(null);
     }
     setIsModalOpen(true);
-    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(true), 0);
   };
 
   const closeModal = () => {
@@ -180,7 +180,7 @@ const Todo = () => {
       className="flex flex-col items-center justify-center rounded-lg bg-gray-400 mx-3 mt-5 text-gray-900 px-4 "
       style={{ height: "calc(100vh - 4.5rem)" }}
     >
-      <h1 className="text-4xl font-black mt-10 mb-5 text-white">Todo List</h1>
+      <h1 className="text-4xl font-black mt-10 mb-5 text-white">Tasks List</h1>
 
       <div className="w-full max-w-2xl mb-5 h-full overflow-y-auto">
         {todos.length > 0 ? (
@@ -246,7 +246,9 @@ const Todo = () => {
             })}
           </ul>
         ) : (
-          <p className="text-center text-gray-400">No todos yet</p>
+          <p className="text-center font-bold text-white mt-20">
+            No tasks yet!!
+          </p>
         )}
       </div>
 
@@ -278,6 +280,7 @@ const Todo = () => {
         isOpen={errorModal.isOpen}
         message={errorModal.message}
         closeErrorModal={closeErrorModal}
+        isError={true}
       />
     </div>
   );

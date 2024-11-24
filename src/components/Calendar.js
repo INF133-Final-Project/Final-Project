@@ -62,11 +62,35 @@ const CustomCalendar = ({ isSplit }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [user] = useAuthState(auth);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const handleEventClick = (event) => {
     setSelectedEvent(event); // Save the clicked event information
     setIsEventModalOpen(true); // Open modal
   };
+
+  const getBorderColor = (priority, completed) => {
+    if (!completed) {
+      switch (priority) {
+        case "High":
+          return "border-red-500";
+        case "Med":
+          return "border-blue-500";
+        case "Low":
+          return "border-yellow-500";
+        default:
+          return "border-gray-500";
+      }
+    } else {
+      return "border-gray-400";
+    }
+  };
+
+  useEffect(() => {
+    if (isEventModalOpen) {
+      setTimeout(() => setIsAnimating(true), 10);
+    }
+  }, [isEventModalOpen]);
 
   useEffect(() => {
     if (user) {
@@ -115,7 +139,16 @@ const CustomCalendar = ({ isSplit }) => {
       </div>
       {isEventModalOpen && selectedEvent && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-300 p-6 rounded-lg shadow-lg w-3/4 sm:w-1/2 text-center">
+          <div
+            className={`bg-gray-300 p-6 rounded-lg shadow-lg w-3/4 sm:w-1/2 text-center border-t-8 border-b-8 transform transition-all duration-700 ${
+              isAnimating
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-full"
+            } ${getBorderColor(
+              selectedEvent.priority,
+              selectedEvent.completed
+            )}`}
+          >
             <h2 className="text-2xl font-semibold mb-4">
               {selectedEvent.title}
             </h2>
@@ -135,7 +168,10 @@ const CustomCalendar = ({ isSplit }) => {
               {selectedEvent.completed ? "Completed" : "Not Completed"}
             </p>
             <button
-              onClick={() => setIsEventModalOpen(false)}
+              onClick={() => {
+                setIsAnimating(false);
+                setTimeout(() => setIsEventModalOpen(false), 700);
+              }}
               className="mt-4 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
             >
               Close

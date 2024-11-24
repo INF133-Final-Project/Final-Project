@@ -10,6 +10,7 @@ import MobileContainer from "../components/MobileContainer";
 import checklist from "../assets/checklist.png";
 import profile from "../assets/profile.png";
 import userLogout from "../assets/userLogout.png";
+import ProfileModal from "../components/ProfileModal";
 
 const Dashboard = () => {
   const [userName, setUserName] = useState(null);
@@ -22,24 +23,25 @@ const Dashboard = () => {
     setIsProfileModalOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (auth.currentUser) {
-        try {
-          const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            setUserName(`${userData.firstName} ${userData.lastName}`);
-          } else {
-            console.error("No such document!");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        } finally {
-          setLoading(false);
+  const fetchUserData = async () => {
+    if (auth.currentUser) {
+      try {
+        const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserName(`${userData.firstName} ${userData.lastName}`);
+        } else {
+          console.error("No such document!");
         }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
       }
-    };
+    }
+  };
+
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -82,39 +84,9 @@ const Dashboard = () => {
     </div>
   );
 
-  // return split ? (
-  //   <Split
-  //     sizes={[40, 60]}
-  //     minSize={[500, 500]}
-  //     gutterSize={10}
-  //     direction="horizontal"
-  //     className="split"
-  //   >
-  //     <div
-  //       className="bg-gray-500 m-5 rounded-lg overflow-hidden"
-  //       style={{ height: "calc(100vh - 2.5rem)" }}
-  //     >
-  //       <Overview userName={userName} auth={auth} />
-  //     </div>
-  //     <div>
-  //       <Container toggleSplit={toggleSplit} handleLogout={handleLogout} />
-  //     </div>
-  //   </Split>
-  // ) : (
-  //   <div className="flex overflow-hidden">
-  //     <div
-  //       className="bg-gray-500 my-5 ml-5 rounded-lg flex-grow"
-  //       style={{ height: "calc(100vh - 2.5rem)" }}
-  //     >
-  //       <Overview userName={userName} auth={auth} />
-  //     </div>
-  //     <Sidebar />
-  //   </div>
-  // );
-
   return (
     <>
-      <div className="hidden sm:grid overflow-hidden h-screen">
+      <div className="hidden md:grid overflow-hidden h-screen">
         {split ? (
           <Split
             sizes={[40, 60]}
@@ -135,6 +107,7 @@ const Dashboard = () => {
                 handleLogout={handleLogout}
                 userName={userName}
                 auth={auth}
+                fetchUserData={fetchUserData}
               />
             </div>
           </Split>
@@ -151,38 +124,23 @@ const Dashboard = () => {
         )}
         ;
       </div>
-      <div className="sm:hidden h-screen">
+      <div className="md:hidden h-screen">
         <MobileContainer
           toggleSplit={toggleSplit}
           handleLogout={handleLogout}
           userName={userName}
           auth={auth}
+          fetchUserData={fetchUserData}
         />
       </div>
       {/* Profile Modal */}
-      {isProfileModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-3/4 sm:w-1/2 max-w-2xl p-6">
-            <h2 className="text-3xl font-bold mb-4 text-center">Profile</h2>
-            <div className="text-center">
-              <p className="mb-2">
-                <strong>Name:</strong> {userName}
-              </p>
-              <p className="mb-2">
-                <strong>Email:</strong> {auth.currentUser?.email}
-              </p>
-            </div>
-            <div className="flex justify-end mt-6">
-              <button
-                className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition duration-300"
-                onClick={toggleProfileModal}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        userName={userName}
+        email={auth.currentUser?.email}
+        onClose={toggleProfileModal}
+        onSave={fetchUserData}
+      />
     </>
   );
 };

@@ -5,8 +5,15 @@ import Budget from "../pages/Budget";
 import checklist from "../assets/checklist.png";
 import profile from "../assets/profile.png";
 import userLogout from "../assets/userLogout.png";
+import ProfileModal from "./ProfileModal";
 
-const Container = ({ toggleSplit, handleLogout, userName, auth }) => {
+const Container = ({
+  toggleSplit,
+  handleLogout,
+  userName,
+  auth,
+  fetchUserData,
+}) => {
   const [nav, setNav] = useState(1);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
@@ -71,29 +78,13 @@ const Container = ({ toggleSplit, handleLogout, userName, auth }) => {
       </div>
 
       {/* Profile Modal */}
-      {isProfileModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-3/4 sm:w-1/2 max-w-2xl p-6">
-            <h2 className="text-3xl font-bold mb-4 text-center">Profile</h2>
-            <div className="text-center">
-              <p className="mb-2">
-                <strong>Name:</strong> {userName}
-              </p>
-              <p className="mb-2">
-                <strong>Email:</strong> {auth.currentUser?.email}
-              </p>
-            </div>
-            <div className="flex justify-end mt-6">
-              <button
-                className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition duration-300"
-                onClick={toggleProfileModal}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        userName={userName}
+        email={auth.currentUser?.email}
+        onClose={toggleProfileModal}
+        onSave={fetchUserData}
+      />
     </div>
   );
 };

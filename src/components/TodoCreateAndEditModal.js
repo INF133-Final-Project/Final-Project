@@ -22,17 +22,19 @@ const TodoCreateAndEditModal = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-700">
       <div
         className={`bg-gray-300 p-6 rounded-lg shadow-lg sm:w-1/2 w-3/4 max-w-2xl sm:mx-0 mx-4 text-center transform transition-all duration-700 ${
-          isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-90"
+          isAnimating
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-full"
         }`}
       >
         <h2 className="text-2xl font-semibold mb-4">
-          {editIndex !== null ? "Edit Todo" : "Add New Todo"}
+          {editIndex !== null ? "Edit Task" : "Add New Task"}
         </h2>
         <input
           type="text"
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
-          placeholder="Enter Todo"
+          placeholder="Enter Task"
           className="w-full p-2 mb-4 rounded bg-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
         />
         <input
