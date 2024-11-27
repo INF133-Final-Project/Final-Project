@@ -91,7 +91,11 @@ const ProfileModal = ({ isOpen, userName, email, onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div
+      className={`fixed inset-0 bg-black flex items-center justify-center z-50 transform transition-opacity duration-700 ${
+        isAnimating ? "bg-opacity-50 opacity-100" : "bg-opacity-0 opacity-0"
+      }`}
+    >
       <div
         className={`bg-gray-300 rounded-lg shadow-lg w-3/4 sm:w-1/2 max-w-2xl p-6 transform transition-all duration-700 ${
           isAnimating

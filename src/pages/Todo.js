@@ -13,6 +13,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 const Todo = () => {
   const [todos, setTodos] = useState([]);
@@ -254,10 +255,12 @@ const Todo = () => {
 
       <button
         onClick={() => openModal()}
-        className="fixed bottom-8 right-8 bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-5 rounded-full shadow-lg transition duration-300"
+        className="fixed bottom-8 right-8 bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-3 rounded-full shadow-lg transition duration-300"
       >
-        <span className="inline sm:hidden">+</span>
-        <span className="hidden sm:inline">+ Create</span>
+        <span className="inline md:hidden">
+          <PlusIcon className="w-6 h-6" strokeWidth={3} />
+        </span>
+        <span className="hidden md:inline">+ Create</span>
       </button>
       <TodoCreateAndEditModal
         isOpen={isModalOpen}

@@ -19,7 +19,11 @@ const TodoCreateAndEditModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-700">
+    <div
+      className={`fixed inset-0 bg-black flex items-center justify-center z-50 transform transition-opacity duration-700 ${
+        isAnimating ? "bg-opacity-50 opacity-100" : "bg-opacity-0 opacity-0"
+      }`}
+    >
       <div
         className={`bg-gray-300 p-6 rounded-lg shadow-lg sm:w-1/2 w-3/4 max-w-2xl sm:mx-0 mx-4 text-center transform transition-all duration-700 ${
           isAnimating
