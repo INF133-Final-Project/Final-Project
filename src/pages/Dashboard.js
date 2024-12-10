@@ -95,7 +95,7 @@ const Dashboard = () => {
             className="split"
           >
             <div
-              className="bg-gray-400 my-5 mx-3 rounded-lg overflow-hidden"
+              className="flex flex-col items-center justify-center bg-gray-400 my-5 mx-3 rounded-lg"
               style={{ height: "calc(100vh - 2.5rem)" }}
             >
               <Overview isSplit={split} />
@@ -113,7 +113,7 @@ const Dashboard = () => {
         ) : (
           <div className="flex">
             <div
-              className="bg-gray-400 my-5 ml-3 rounded-lg overflow-hidden flex-grow"
+              className="flex flex-col items-center justify-center bg-gray-400 my-5 ml-3 rounded-lg flex-grow"
               style={{ height: "calc(100vh - 2.5rem)" }}
             >
               <Overview />
