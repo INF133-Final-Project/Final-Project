@@ -9,22 +9,39 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
+import { FaEdit } from "react-icons/fa";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const Budget = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isEditBudgetPopupOpen, setIsEditBudgetPopupOpen] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [transactionName, setTransactionName] = useState("");
   const [transactionAmount, setTransactionAmount] = useState("");
   const [transactionCategory, setTransactionCategory] = useState("");
   const [weeklyBudget, setWeeklyBudget] = useState(0);
+  const [newWeeklyBudget, setNewWeeklyBudget] = useState(weeklyBudget); // To store the new value
   const [budgetInput, setBudgetInput] = useState("");
   const [chartType, setChartType] = useState("pie"); // 'pie' or 'bar'
 
-  // Toggle popup visibility
-  const togglePopup = () => setIsPopupOpen(!isPopupOpen);
+   // Toggle modal for adding transaction
+   const toggleAddTransactionPopup = () => setIsPopupOpen(!isPopupOpen);
+
+   // Toggle modal for editing weekly budget
+   const toggleEditBudgetPopup = () => setIsEditBudgetPopupOpen(!isEditBudgetPopupOpen);
+ 
+   // Handle updating the weekly budget
+   const handleUpdateBudget = () => {
+     if (!isNaN(parseFloat(newWeeklyBudget)) && parseFloat(newWeeklyBudget) >= 0) {
+       setWeeklyBudget(parseFloat(newWeeklyBudget)); // Update the budget
+       setIsEditBudgetPopupOpen(false); // Close the modal
+     } else {
+       alert("Please enter a valid budget amount.");
+     }
+   };
+ 
 
   // Handle adding a new transaction
   const handleAddTransaction = () => {
@@ -40,7 +57,7 @@ const Budget = () => {
       setTransactionName("");
       setTransactionAmount("");
       setTransactionCategory("");
-      togglePopup();
+      toggleAddTransactionPopup();
     } else {
       alert("Please fill out all fields before adding a transaction.");
     }
@@ -87,20 +104,76 @@ const Budget = () => {
       >
         {/* Weekly Budget Section */}
         <div className="w-1/2 mb-6 text-center">
-          <h2 className="text-2xl font-bold mb-2">Weekly Budget</h2>
           <div className="mb-4 space-y-2">
-            <div className="flex justify-between text-lg">
-              <span>Current Budget:</span>
-              <span className="font-bold">${weeklyBudget.toFixed(2)}</span>
+            <div className="flex justify-between space-x-10">
+              {/* Current Budget */}
+               {/* Weekly Budget Section with Edit Icon */}
+          <div className="flex justify-between items-center">
+            <div className="w-1/2 text-left">
+              <p className="text-md font-medium text-gray-700 whitespace-nowrap">WEEKLY BUDGET</p>
+              <p className="font-bold text-4xl text-white">
+                ${weeklyBudget.toFixed(2)}
+              </p>
             </div>
-            <div className="flex justify-between text-lg">
-              <span>Remaining Budget:</span>
-              <span className={`font-bold ${remainingBudget < 0 ? "text-red-500" : "text-green-500"}`}>
-                ${remainingBudget.toFixed(2)}
-              </span>
-            </div>
+            <button
+              onClick={toggleEditBudgetPopup}
+              className="relative text-blue-700 text-xl bg-transparent border-0"
+              style={{ top: "18px", right: "15px" }}
+            >
+              <FaEdit />
+            </button>
           </div>
-          <div className="flex justify-center items-center">
+
+          {/* Modal for Editing Weekly Budget */}
+          {isEditBudgetPopupOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg w-1/3 p-6">
+                <h2 className="text-2xl font-bold mb-4">Edit Weekly Budget</h2>
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">New Weekly Budget ($)</label>
+                  <input
+                    type="number"
+                    value={newWeeklyBudget}
+                    onChange={(e) => setNewWeeklyBudget(e.target.value)}
+                    className="w-full p-2 border rounded text-black"
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    onClick={toggleEditBudgetPopup}
+                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleUpdateBudget}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Update
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+              {/* Total Expenses */}
+              <div className="w-1/2 text-left">
+                <p className="text-md font-medium text-gray-700 whitespace-nowrap">TOTAL EXPENSES</p>
+                <p className="font-bold text-4xl text-white">${totalExpenses.toFixed(2)}</p>
+              </div>
+            </div>
+             {/* Remaining Budget */}
+            {/* <div>
+              <p className="text-lg font-medium text-gray-700">REMAINING</p>
+              <p
+                className={`font-bold text-4xl ${
+                  remainingBudget < 0 ? "text-red-500" : "text-green-500"
+                }`}
+              >
+                ${remainingBudget.toFixed(2)}
+              </p>
+            </div> */}
+          </div>
+          {/* <div className="flex justify-center items-center">
             <input
               type="number"
               placeholder="Set Weekly Budget"
@@ -114,8 +187,9 @@ const Budget = () => {
             >
               Update
             </button>
-          </div>
+          </div> */}
         </div>
+
 
 
         {/* Chart Section with Toggle */}
@@ -144,9 +218,9 @@ const Budget = () => {
         {/* Transactions List */}
         <div className="w-1/2 mb-6">
           {/* Total Expenses */}
-          <div className="text-lg font-bold text-center mb-4">
+          {/* <div className="text-lg font-bold text-center mb-4">
             Total Expenses: ${totalExpenses.toFixed(2)}
-          </div>
+          </div> */}
           <ul className="bg-white text-black p-4 rounded-lg">
             {transactions.length === 0 ? (
               <p className="text-center">No transactions yet.</p>
@@ -172,7 +246,7 @@ const Budget = () => {
 
         {/* Add Transaction Button */}
         <button
-          onClick={togglePopup}
+          onClick={toggleAddTransactionPopup}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Add Transaction
@@ -213,7 +287,7 @@ const Budget = () => {
             </div>
             <div className="flex justify-end">
               <button
-                onClick={togglePopup}
+                onClick={toggleAddTransactionPopup}
                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
               >
                 Cancel
