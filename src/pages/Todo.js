@@ -181,9 +181,9 @@ const Todo = () => {
       className="flex flex-col items-center justify-center rounded-lg bg-gray-400 mx-3 mt-5 text-gray-900 px-4 "
       style={{ height: "calc(100vh - 4.5rem)" }}
     >
-      <h1 className="text-4xl font-black mt-10 mb-5 text-white">Tasks List</h1>
+      {/* <h1 className="text-4xl font-black mt-10 mb-5 text-white">Tasks List</h1> */}
 
-      <div className="w-full max-w-2xl mb-5 h-full overflow-y-auto">
+      <div className="w-full max-w-2xl mb-5 h-full overflow-y-auto mt-16">
         {todos.length > 0 ? (
           <ul className="space-y-4">
             {todos.map((todo, index) => {

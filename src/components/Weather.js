@@ -68,17 +68,17 @@ const Weather = ({ isSplit }) => {
               <img
                 src={condition.icon}
                 alt={condition.text}
-                className="w-12 h-12 mr-2"
+                className="w-20 h-20 mr-1"
               />
-              <div className="flex space-x-3 font-bold text-lg">
+              <div className="flex-col font-bold text-lg">
                 <p>
-                  Today's weather is {condition.text} at {temp_f} °F
+                  Today's weather is {condition.text} at {temp_f}°
                 </p>
-                <p>|</p>
-                <p>H: {maxtemp_f} °F</p>
-                <p>/</p>
-                <p>L: {mintemp_f} °F</p>
-                <p>@ {name}</p>
+                <div className="flex space-x-3">
+                  <p>H: {maxtemp_f}°</p>
+                  <p>L: {mintemp_f}°</p>
+                  <p>@ {name}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -88,19 +88,16 @@ const Weather = ({ isSplit }) => {
               <img
                 src={condition.icon}
                 alt={condition.text}
-                className="w-16 h-16 mr-3"
+                className="w-20 h-20 mr-1"
               />
               <div className="flex-col items-center justify-center font-bold">
-                <p className="text-xs">
+                <p className="text-sm">
                   {temp_f}°&nbsp;&nbsp; @ {name}
                 </p>
-                <p className="text-xs">{condition.text}</p>
-                <div>
-                  <p className="text-xs">
-                    H: {maxtemp_f}°&nbsp;&nbsp; L: {mintemp_f}°
-                  </p>
-                  <p className="text-xs"></p>
-                </div>
+                <p className="text-sm">{condition.text}</p>
+                <p className="text-sm">
+                  H: {maxtemp_f}°&nbsp;&nbsp; L: {mintemp_f}°
+                </p>
               </div>
             </div>
           </div>
@@ -112,19 +109,17 @@ const Weather = ({ isSplit }) => {
             <img
               src={condition.icon}
               alt={condition.text}
-              className="w-16 h-16 mr-3"
+              className="w-16 h-16 mr-1"
             />
             <div className="flex-col items-center justify-center font-bold">
-              <p className="text-xs">
+              <p className="text-sm">
                 {temp_f}°&nbsp;&nbsp; @ {name}
               </p>
-              <p className="text-xs">{condition.text}</p>
-              <div>
-                <p className="text-xs">
-                  H: {maxtemp_f}°&nbsp;&nbsp; L: {mintemp_f}°
-                </p>
-                <p className="text-xs"></p>
-              </div>
+              <p className="text-sm">{condition.text}</p>
+
+              <p className="text-sm">
+                H: {maxtemp_f}°&nbsp;&nbsp; L: {mintemp_f}°
+              </p>
             </div>
           </div>
         </div>
