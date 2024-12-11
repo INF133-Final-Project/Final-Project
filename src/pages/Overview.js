@@ -6,6 +6,7 @@ import CustomWeather from "../components/Weather";
 const Overview = ({ isSplit }) => {
   return (
     <div className="flex flex-col justify-start w-full h-screen overflow-auto">
+      {/* Desktop View */}
       <div className="hidden md:block">
         {!isSplit ? (
           <div className="mx-6 mt-4 flex-shrink-0">
@@ -23,6 +24,8 @@ const Overview = ({ isSplit }) => {
           </div>
         )}
       </div>
+
+      {/* Mobile View */}
       <div className="block md:hidden">
         <div className="mx-6 mt-4 space-y-1 flex-shrink-0">
           <div className="flex justify-between items-center">

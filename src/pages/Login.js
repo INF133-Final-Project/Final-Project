@@ -11,12 +11,17 @@ import { useNavigate, Link } from "react-router-dom";
 import googleLogo from "../assets/googleLogo.png";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [user] = useAuthState(auth);
-  const navigate = useNavigate();
+  const [email, setEmail] = useState(""); // State to hold the user's email input
+  const [password, setPassword] = useState(""); // State to hold the user's password input
+  const [error, setError] = useState(""); // State to display error messages
+  const [user] = useAuthState(auth); // Hook to get the current authenticated user
+  const navigate = useNavigate(); // Hook to navigate between routes
 
+  /**
+   * Maps error codes to user-friendly error messages.
+   * code - The error code from Firebase.
+   * string - The corresponding error message.
+   */
   const getErrorMessage = (code) => {
     switch (code) {
       case "auth/invalid-credential":
@@ -28,6 +33,13 @@ const Login = () => {
     }
   };
 
+  /**
+   * Saves user information to Firestore after a successful login.
+   * userId - The user's unique ID from Firebase.
+   * firstName - The user's first name.
+   * lastName - The user's last name.
+   * email - The user's email address.
+   */
   const saveUserInfo = async (userId, firstName, lastName, email) => {
     try {
       await setDoc(doc(db, "users", userId), {
@@ -41,41 +53,52 @@ const Login = () => {
     }
   };
 
+  /**
+   * Handles the Google Sign-In process using Firebase Authentication.
+   */
   const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
+    const provider = new GoogleAuthProvider(); // Create Google Auth provider instance
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider); // Sign in with Google popup
       const user = result.user;
 
-      const nameParts = (user.displayName || "").split(" ");
-      const lastName = nameParts.pop();
-      const firstName = nameParts.join(" ");
+      const nameParts = (user.displayName || "").split(" "); // Split user's display name
+      const lastName = nameParts.pop(); // Extract last name
+      const firstName = nameParts.join(" "); // Extract first name
 
+      // Save user info to Firestore
       await saveUserInfo(user.uid, firstName || "", lastName || "", user.email);
 
       console.log("Google Sign-In Success:", { firstName, lastName });
-      navigate("/dashboard");
+      navigate("/dashboard"); // Navigate to dashboard on success
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);
-      setError("Failed to sign in with Google. Please try again.");
+      setError("Failed to sign in with Google. Please try again."); // Display error message
     }
   };
 
+  /**
+   * Handles login with email and password using Firebase Authentication.
+   * e - The form submission event.
+   */
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      await signInWithEmailAndPassword(auth, email, password); // Login with email and password
+      navigate("/dashboard"); // Navigate to dashboard on success
     } catch (error) {
       console.error("Error code:", error.code);
-      setError(getErrorMessage(error.code));
+      setError(getErrorMessage(error.code)); // Display error message based on error code
     }
   };
 
+  /**
+   * Redirects the user to the dashboard if already logged in.
+   */
   useEffect(() => {
     // If user is logged in, redirect to dashboard
     if (user) {
-      navigate("/dashboard");
+      navigate("/dashboard"); // Redirect to dashboard if user is logged in
     }
   }, [user, navigate]);
 

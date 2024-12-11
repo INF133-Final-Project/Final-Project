@@ -1,7 +1,7 @@
 import React from "react";
 
 const ErrorModal = ({ isOpen, message, closeErrorModal, isError }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null; // Do not render the modal if it is not open
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

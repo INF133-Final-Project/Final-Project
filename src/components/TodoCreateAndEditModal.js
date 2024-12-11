@@ -16,7 +16,7 @@ const TodoCreateAndEditModal = ({
   addOrEditTodo,
   deleteTodo,
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null; // Do not render the modal if it's not open
 
   return (
     <div

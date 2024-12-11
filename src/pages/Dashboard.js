@@ -12,49 +12,67 @@ import userLogout from "../assets/userLogout.png";
 import ProfileModal from "../components/ProfileModal";
 
 const Dashboard = () => {
-  const [userName, setUserName] = useState(null);
-  const [split, setSplit] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [userName, setUserName] = useState(null); // Stores the user's full name
+  const [split, setSplit] = useState(false); // Tracks whether split view is enabled
+  const [loading, setLoading] = useState(true); // Tracks whether user data is being fetched
+  const navigate = useNavigate(); // Hook for navigation
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); // Tracks profile modal visibility
 
+  /**
+   * Toggles the visibility of the profile modal.
+   */
   const toggleProfileModal = () => {
     setIsProfileModalOpen((prev) => !prev);
   };
 
+  /**
+   * Fetches user data (first and last name) from Firestore.
+   */
   const fetchUserData = async () => {
     if (auth.currentUser) {
       try {
         const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setUserName(`${userData.firstName} ${userData.lastName}`);
+          setUserName(`${userData.firstName} ${userData.lastName}`); // Combine first and last name
         } else {
           console.error("No such document!");
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading state
       }
     }
   };
 
+  /**
+   * Fetch user data on component mount.
+   */
   useEffect(() => {
     fetchUserData();
   }, []);
 
+  /**
+   * Toggles split view mode.
+   */
   const toggleSplit = () => setSplit((prevSplit) => !prevSplit);
 
+  /**
+   * Logs the user out and navigates to the login page.
+   */
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      navigate("/login");
+      await signOut(auth); // Sign out the user
+      navigate("/login"); // Redirect to login page
     } catch (error) {
-      console.error("Logout failed", error);
+      console.error("Logout failed", error); // Log any errors during logout
     }
   };
 
+  /**
+   * Renders a loading spinner while data is being fetched.
+   */
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -63,6 +81,9 @@ const Dashboard = () => {
     );
   }
 
+  /**
+   * Sidebar icon component for rendering individual icons in the sidebar.
+   */
   const SidebarIcon = ({ src, alt, onClick }) => (
     <img
       src={src}
@@ -72,6 +93,9 @@ const Dashboard = () => {
     />
   );
 
+  /**
+   * Sidebar component for desktop view.
+   */
   const Sidebar = () => (
     <div
       className="w-10 flex flex-col items-center pt-5 space-y-3"

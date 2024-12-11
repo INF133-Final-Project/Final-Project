@@ -8,6 +8,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 const localizer = momentLocalizer(moment);
 
+// Custom toolbar for navigation (Back/Next buttons and title)
 const CustomToolbar = ({ label, onNavigate }) => {
   return (
     <div className="flex justify-between items-center bg-gray-100 px-1 py-2 rounded-md">
@@ -30,6 +31,7 @@ const CustomToolbar = ({ label, onNavigate }) => {
   );
 };
 
+// Function to style events based on priority and completion status
 const eventStyleGetter = (event) => {
   let backgroundColor;
 
@@ -58,17 +60,19 @@ const eventStyleGetter = (event) => {
 };
 
 const CustomCalendar = ({ isSplit }) => {
-  const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
-  const [user] = useAuthState(auth);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [events, setEvents] = useState([]); // Holds the calendar events
+  const [selectedEvent, setSelectedEvent] = useState(null); // Tracks the currently selected event
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false); // Controls event modal visibility
+  const [user] = useAuthState(auth); // Gets the authenticated user
+  const [isAnimating, setIsAnimating] = useState(false); // Manages animation state for modal
 
+  // Handle clicking on an event to open the modal
   const handleEventClick = (event) => {
     setSelectedEvent(event); // Save the clicked event information
     setIsEventModalOpen(true); // Open modal
   };
 
+  // Get border color for the modal based on priority and completion
   const getBorderColor = (priority, completed) => {
     if (!completed) {
       switch (priority) {
@@ -86,12 +90,14 @@ const CustomCalendar = ({ isSplit }) => {
     }
   };
 
+  // Animate the modal when it opens
   useEffect(() => {
     if (isEventModalOpen) {
       setTimeout(() => setIsAnimating(true), 10);
     }
   }, [isEventModalOpen]);
 
+  // Fetch events from Firestore for the authenticated user
   useEffect(() => {
     if (user) {
       const eventsRef = collection(db, "users", user.uid, "todos");
@@ -110,10 +116,10 @@ const CustomCalendar = ({ isSplit }) => {
             allDay: false, // Set false if not an all-day event
           };
         });
-        setEvents(firebaseEvents);
+        setEvents(firebaseEvents); // Update events state
       });
 
-      return () => unsubscribe();
+      return () => unsubscribe(); // Cleanup listener on component unmount
     }
   }, [user]);
 

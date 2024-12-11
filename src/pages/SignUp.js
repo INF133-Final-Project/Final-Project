@@ -5,7 +5,13 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
 
-// Function to save user information to Firestore
+/**
+ * Saves user information (first name, last name, email) to Firestore.
+ * userId - The user's unique Firebase ID.
+ * firstName - The user's first name.
+ * lastName - The user's last name.
+ * email - The user's email address.
+ */
 const saveUserInfo = async (userId, firstName, lastName, email) => {
   try {
     await setDoc(doc(db, "users", userId), {
@@ -20,19 +26,24 @@ const saveUserInfo = async (userId, firstName, lastName, email) => {
 };
 
 const SignUp = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailConfirm, setEmailConfirm] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [error, setError] = useState("");
-  const [user] = useAuthState(auth);
-  const navigate = useNavigate();
+  const [firstName, setFirstName] = useState(""); // State for user's first name
+  const [lastName, setLastName] = useState(""); // State for user's last name
+  const [email, setEmail] = useState(""); // State for user's email
+  const [emailConfirm, setEmailConfirm] = useState(""); // State for email confirmation
+  const [password, setPassword] = useState(""); // State for user's password
+  const [passwordConfirm, setPasswordConfirm] = useState(""); // State for password confirmation
+  const [error, setError] = useState(""); // State to hold error messages
+  const [user] = useAuthState(auth); // Hook to check the current authentication state
+  const navigate = useNavigate(); // Hook to handle navigation between pages
 
+  /**
+   * Handles the sign-up process, validates inputs, and registers the user with Firebase Authentication.
+   * e - The form submission event.
+   */
   const handleSignUp = async (e) => {
     e.preventDefault();
 
+    // Validate email and password confirmation
     if (email !== emailConfirm) {
       setError("Emails do not match.");
       return;
@@ -51,19 +62,22 @@ const SignUp = () => {
       );
       const user = userCredential.user;
 
-      // // Set displayName in Firebase Authentication
-      // await updateProfile(user, { displayName: `${firstName} ${lastName}` });
-
       // Save user information to Firestore
       await saveUserInfo(user.uid, firstName, lastName, email);
 
-      // Navigate to the dashboard after successful sign-up
+      // Redirect to login page after successful registration
       navigate("/login");
     } catch (error) {
+      // Handle registration errors
       setError(getErrorMessage(error.code));
     }
   };
 
+  /**
+   * Maps Firebase error codes to user-friendly error messages.
+   * code - The error code from Firebase.
+   * strings - The corresponding error message.
+   */
   const getErrorMessage = (code) => {
     switch (code) {
       case "auth/email-already-in-use":
@@ -77,10 +91,13 @@ const SignUp = () => {
     }
   };
 
+  /**
+   * Redirects the user to the dashboard if they are already logged in.
+   */
   useEffect(() => {
     // If user is logged in, redirect to dashboard
     if (user) {
-      navigate("/dashboard");
+      navigate("/dashboard"); // Redirect to dashboard if user is logged in
     }
   }, [user, navigate]);
 
