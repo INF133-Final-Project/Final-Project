@@ -10,6 +10,7 @@ import {
   BarElement,
 } from "chart.js";
 import { FaEdit } from "react-icons/fa";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
@@ -117,7 +118,7 @@ const Budget = () => {
             </div>
             <button
               onClick={toggleEditBudgetPopup}
-              className="relative text-blue-700 text-xl bg-transparent border-0"
+              className="relative text-green-600 text-xl bg-transparent border-0"
               style={{ top: "18px", right: "15px" }}
             >
               <FaEdit />
@@ -147,7 +148,7 @@ const Budget = () => {
                   </button>
                   <button
                     onClick={handleUpdateBudget}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                   >
                     Update
                   </button>
@@ -183,37 +184,39 @@ const Budget = () => {
             />
             <button
               onClick={updateWeeklyBudget}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
             >
               Update
             </button>
           </div> */}
         </div>
 
-
-
-        {/* Chart Section with Toggle */}
-        <div className="w-1/2 mb-6">
-          <div className="flex justify-center mb-4">
+      {/* Chart Section with Toggle */}
+      <div className="w-1/2 mb-6">
+        <div className="flex justify-center mb-4">
+          <div className="flex items-center bg-gray-200 rounded-full p-1">
+            {/* Pie Chart Button */}
             <button
               onClick={() => setChartType("pie")}
-              className={`px-4 py-2 mr-2 rounded font-bold ${
-                chartType === "pie" ? "bg-blue-700 text-white" : "bg-blue-500 text-gray-200"
+              className={`px-4 py-2 rounded-full font-medium ${
+                chartType === "pie" ? "bg-green-600 text-white" : "bg-transparent text-gray-500"
               }`}
             >
               Pie Chart
             </button>
+            {/* Bar Chart Button */}
             <button
               onClick={() => setChartType("bar")}
-              className={`px-4 py-2 rounded font-bold ${
-                chartType === "bar" ? "bg-blue-700 text-white" : "bg-blue-500 text-gray-200"
+              className={`px-4 py-2 rounded-full font-medium ${
+                chartType === "bar" ? "bg-green-600 text-white" : "bg-transparent text-gray-500"
               }`}
             >
               Bar Chart
             </button>
           </div>
-          {chartType === "pie" ? <Pie data={chartData} /> : <Bar data={chartData} />}
         </div>
+        {chartType === "pie" ? <Pie data={chartData} /> : <Bar data={chartData} />}
+      </div>
 
         {/* Transactions List */}
         <div className="w-1/2 mb-6">
@@ -247,9 +250,12 @@ const Budget = () => {
         {/* Add Transaction Button */}
         <button
           onClick={toggleAddTransactionPopup}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="fixed bottom-8 right-8 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-3 rounded-full shadow-lg transition duration-300"
         >
-          Add Transaction
+          <span className="inline md:hidden">
+          <PlusIcon className="w-6 h-6" strokeWidth={3} />
+        </span>
+        <span className="hidden md:inline">+ Add Transaction</span>
         </button>
       </div>
 
@@ -294,7 +300,7 @@ const Budget = () => {
               </button>
               <button
                 onClick={handleAddTransaction}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
               >
                 Add
               </button>
