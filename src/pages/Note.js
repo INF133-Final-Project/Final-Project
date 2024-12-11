@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import 'react-quill/dist/quill.snow.css';
 import { db, auth } from "../firebaseConfig";
 import ErrorModal from "../components/ErrorModal";
 import {
@@ -12,6 +13,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import NotesCreateEditModal from "../components/NotesCreateEditModal";
 
 
@@ -41,7 +43,7 @@ const Note = () => {
       setNewTitle("");
       setNewNote("");
       setLastEdited("");
-      setTag("Tag1");
+      setTag("");
       setEditIndex(null);
     }
     setIsModalOpen(true);
@@ -59,11 +61,12 @@ const Note = () => {
 
   const addOrEditNote = async () => {
     if(newTitle.trim() && newNote.trim() && lastEdited && user) {
+      const currentStamp = Date.now();
 
       const noteData = {
         title: newTitle,
         text: newNote,
-        edit: lastEdited,
+        edit: currentStamp,
         tag,
       };
 
@@ -124,7 +127,7 @@ const Note = () => {
   useEffect(() => {
     if (user) {
       const notesRef = collection(db, "users", user.uid, "notes");
-      const notesQuery = query(notesRef, orderBy("edit")); // order by last edited
+      const notesQuery = query(notesRef, orderBy("edit", "desc")); // order by last edited
 
       const unsubscribe = onSnapshot(
         notesQuery,

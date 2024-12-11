@@ -1,4 +1,6 @@
 import React from "react";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const NotesCreateEditModal = ({
     isOpen,
@@ -37,13 +39,31 @@ const NotesCreateEditModal = ({
               placeholder="Enter Title"
               className="w-full p-2 mb-4 rounded bg-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
-            <input
+            <ReactQuill
+              value={newNote}
+              onChange={setNewNote}
+              modules={{
+                toolbar: [
+                  [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                  ['bold', 'italic', 'underline'],
+                  [{ 'align': [] }],
+                  ['link'],
+                ],
+              }}
+              className="mb-4"
+            />
+            
+            <textarea
               type="text"
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
+              rows = "10"
               placeholder="Enter Note"
-              className="w-full p-2 mb-4 rounded bg-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full p-4 mb-4 rounded bg-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+
             />
+            
             <input
               type="datetime-local"
               value={lastEdited}
@@ -56,9 +76,11 @@ const NotesCreateEditModal = ({
               onChange={(e) => setTag(e.target.value)}
               className="w-full p-2 mb-4 rounded bg-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400"
             >
-              <option value="Tag1">Low</option>
-              <option value="Tag2">Med</option>
-              <option value="Tag3">High</option>
+
+
+              <option value="Tag1">Tag1</option>
+              <option value="Tag2">Tag2</option>
+              <option value="Tag3">Tag3</option>
             </select>
             <div className="flex justify-end items-center space-x-2">
               {editIndex !== null && (
