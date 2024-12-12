@@ -18,7 +18,6 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import NotesCreateEditModal from "../components/NotesCreateEditModal";
 import { Input } from "postcss";
 import { BsSearch } from 'react-icons/bs';
-import { BiAlignMiddle } from "react-icons/bi";
 
 
 const Note = () => {
@@ -26,7 +25,7 @@ const Note = () => {
   const [newNote, setNewNote] = useState("");
   const [newTitle, setNewTitle] = useState("");
   const [lastEdited, setLastEdited] = useState("");
-  const [tag, setTag] = useState("Tag1");
+  const [tag, setTag] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -193,8 +192,6 @@ const Note = () => {
       style={{ height: "calc(100vh - 4.5rem)" }}
     >
       <h1 className="text-4xl font-black mt-10 mb-5 text-white"></h1>
-
-      // search bar -- this is where i'm having trouble! 
       <div className="w-full max-w-2xl mb-5 h-auto y-auto"
         >
         <div style={{ display: "flex", alignItems: "center"}}>
@@ -202,44 +199,46 @@ const Note = () => {
             onChange={(e) => setSearchQuery(e.target.value)} 
             placeholder="Search notes"
             style={{ flex: 1, marginRight: "8px" }}></input>
-          
-          // this is the search button
           <BsSearch 
             onClick={handleSearch} 
-            style={{ cursor: "pointer" }}/>
+            style={{ cursor: "pointer", marginRight: "8px" }}/>
         </div>
         <div>
-          {filteredNotes.map((note) => (
-            <div key={note.id}
-            className="w-full max-w-2xl mb-5 h-full overflow-y-auto">
+          {filteredNotes.map((note) => {
+            const originalIndex = notes.findIndex((n) => n.id === note.id);
+            const newDate = new Date(note.edit).toLocaleString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            return (
               <li
-                className={`bg-gray-100 p-3 rounded-md shadow-md flex flex-col border-r-8 ${getBorderColor(
-                  note.tag
-                )} cursor-pointer hover:bg-gray-300 transition duration-200`}
-                >
+              key={note.id}
+              onClick={() => openModal(originalIndex)} 
+              className={`w-full max-w-2xl mb-5 bg-gray-100 p-3 rounded-md shadow-md flex flex-col border-r-8 ${getBorderColor(note.tag)} cursor-pointer hover:bg-gray-300 transition duration-200`}
+              >
                 <div className="flex items-center">
-                    <div className="flex flex-col ml-2 flex-grow">
-                      <span style={{fontWeight: 'bold'}}>
-                        {note.title}
-                      </span>
-                      <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(note.text) }}/>  
-                      <p className="text-xs text-gray-500 mt-1 ">
-                        // i'm also struggling having the date show up
-                        {note.currentStamp} | {" "}
-                        <span
-                          className={`font-bold ${getFontColor(
-                            note.tag
-                          )} `}
-                        >
-                          {note.tag}
-                        </span>
-                      </p>
-                    </div>
+                  <div className="flex flex-col ml-2 flex-grow">
+                    <span style={{ fontWeight: 'bold' }}>{note.title}</span>
+                    <span
+                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(note.text) }}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                    {newDate} | {" "}
+                    <span className={`font-bold ${getFontColor(note.tag)}`}>
+                      {note.tag}
+                    </span>
+                    </p>
                   </div>
-                  </li>
-            </div>
-          ))}
+                </div>
+              </li>
+            )
+          })}
         </div>
+        
       </div>
 
       <div className="w-full max-w-2xl mb-5 h-full overflow-y-auto">
@@ -298,7 +297,9 @@ const Note = () => {
         onClick={() => openModal()}
         className="fixed bottom-8 right-8 bg-blue-400 hover:bg-blue-500 text-white font-bold py-3 px-5 rounded-full shadow-lg transition duration-300"
       >
-        <span className="inline sm:hidden">+</span>
+        <span className="inline sm:hidden">
+          <PlusIcon className="w-6 h-6" strokeWidth={3} />
+        </span>
         <span className="hidden sm:inline">+ Create</span>
       </button>
 

@@ -56,21 +56,19 @@ const NotesCreateEditModal = ({
               }}
               className="w-full p-4 mb-4 rounded bg-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-
-            
-            
+            <h3 className="text-1xl mb-2">Select a Tag</h3>
             <select
               value={tag}
               onChange={(e) => setTag(e.target.value)}
               className="w-full p-2 mb-4 rounded bg-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-
-
+              <option value="Empty"> </option>
               <option value="Tag1">Tag1</option>
               <option value="Tag2">Tag2</option>
               <option value="Tag3">Tag3</option>
               
             </select>
+
             <div className="flex justify-end items-center space-x-2">
               {editIndex !== null && (
                 <button
