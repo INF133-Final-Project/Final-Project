@@ -16,55 +16,55 @@ import { db, auth } from "../firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ErrorModal from "../components/ErrorModal";
 
-// Register Chart.js components
+// Register Chart.js components to be used in charts
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const Budget = () => {
   // State Variables
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isEditBudgetPopupOpen, setIsEditBudgetPopupOpen] = useState(false);
-  const [transactions, setTransactions] = useState([]);
-  const [transactionName, setTransactionName] = useState("");
-  const [transactionAmount, setTransactionAmount] = useState("");
-  const [transactionCategory, setTransactionCategory] = useState("");
-  const [weeklyBudget, setWeeklyBudget] = useState(0);
-  const [newWeeklyBudget, setNewWeeklyBudget] = useState(weeklyBudget); // To store the new value
-  const [chartType, setChartType] = useState("pie"); // 'pie' or 'bar'
-  const [user] = useAuthState(auth);
-  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
-  const [loading, setLoading] = useState(true);
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // Controls if the Add Transaction popup is open
+  const [isEditBudgetPopupOpen, setIsEditBudgetPopupOpen] = useState(false); // Controls if the Edit Budget popup is open
+  const [transactions, setTransactions] = useState([]); // Holds the list of transactions
+  const [transactionName, setTransactionName] = useState(""); // Holds the transaction name input
+  const [transactionAmount, setTransactionAmount] = useState(""); // Holds the transaction amount input
+  const [transactionCategory, setTransactionCategory] = useState(""); // Holds the transaction category input
+  const [weeklyBudget, setWeeklyBudget] = useState(0); // Stores the current weekly budget
+  const [newWeeklyBudget, setNewWeeklyBudget] = useState(weeklyBudget); // Holds the new weekly budget for editing
+  const [chartType, setChartType] = useState("pie"); // Controls the chart type (pie or bar)
+  const [user] = useAuthState(auth); // Holds the authenticated user state
+  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" }); // Manages error modal state
+  const [loading, setLoading] = useState(true); // Controls loading state for fetching data
 
-   // Toggle Modal Functions
-  const toggleAddTransactionPopup = () => setIsPopupOpen(!isPopupOpen);
-  const toggleEditBudgetPopup = () => setIsEditBudgetPopupOpen(!isEditBudgetPopupOpen);
+  // Toggle Modal Functions
+  const toggleAddTransactionPopup = () => setIsPopupOpen(!isPopupOpen); // Toggles the Add Transaction modal
+  const toggleEditBudgetPopup = () => setIsEditBudgetPopupOpen(!isEditBudgetPopupOpen); // Toggles the Edit Budget modal
 
   // Error Modal Close Function
-  const closeErrorModal = () => setErrorModal(false);
- 
-   // Handle updating the weekly budget
+  const closeErrorModal = () => setErrorModal(false); // Closes the error modal
+
+  // Handle updating the weekly budget
   const handleUpdateBudget = async () => {
-  if (!isNaN(parseFloat(newWeeklyBudget)) && parseFloat(newWeeklyBudget) >= 0) {
-    try {
-      if (user) {
-        // Reference to a document within the weeklyBudget collection
-        const budgetDocRef = doc(db, "users", user.uid, "weeklyBudget", "currentBudget");
-        await setDoc(budgetDocRef, { amount: parseFloat(newWeeklyBudget) }, { merge: true });
-        console.log("Weekly budget updated successfully in Firestore.");
-        setWeeklyBudget(parseFloat(newWeeklyBudget)); // Update the local state
-        setIsEditBudgetPopupOpen(false); // Close the modal
-      } else {
+    if (!isNaN(parseFloat(newWeeklyBudget)) && parseFloat(newWeeklyBudget) >= 0) {
+      try {
+        if (user) {
+          // Reference to the document within Firestore for weekly budget
+          const budgetDocRef = doc(db, "users", user.uid, "weeklyBudget", "currentBudget");
+          await setDoc(budgetDocRef, { amount: parseFloat(newWeeklyBudget) }, { merge: true });
+          console.log("Weekly budget updated successfully in Firestore.");
+          setWeeklyBudget(parseFloat(newWeeklyBudget)); // Update the local state with the new budget
+          setIsEditBudgetPopupOpen(false); // Close the Edit Budget modal
+        } else {
+          setErrorModal({
+            isOpen: true,
+            message: "You must be signed in to update the budget.",
+          });
+        }
+      } catch (error) {
+        console.error("Error updating weekly budget:", error);
         setErrorModal({
           isOpen: true,
-          message: "You must be signed in to update the budget.",
+          message: "Failed to update the budget. Please try again.",
         });
       }
-    } catch (error) {
-      console.error("Error updating weekly budget:", error);
-      setErrorModal({
-        isOpen: true,
-        message: "Failed to update the budget. Please try again.",
-      });
-    }
     } else {
       alert("Please enter a valid budget amount.");
     }
@@ -81,7 +81,7 @@ const Budget = () => {
         return;
       }
 
-      // Create transaction data object
+      // Transaction data object
       const transactionData = {
         name: transactionName,
         amount: parseFloat(transactionAmount),
@@ -89,7 +89,7 @@ const Budget = () => {
         date: new Date(),
       };
 
-      // Validate transaction data
+      // Validate the transaction data
       if (!transactionData.amount || !transactionData.category || !transactionData.date) {
         console.error("Invalid transaction data:", transactionData);
         setErrorModal({
@@ -103,7 +103,7 @@ const Budget = () => {
       await addDoc(collection(db, "users", user.uid, "transactions"), transactionData);
       console.log("Transaction added successfully:", transactionData);
 
-      setIsPopupOpen(false);
+      setIsPopupOpen(false); // Close the Add Transaction modal
 
     } catch (error) {
       console.error("Error adding transaction:", error);
@@ -114,7 +114,7 @@ const Budget = () => {
     }
   };
 
-  // Function to fetch transactions
+  // Fetch the list of transactions
   const fetchTransactions = () => {
     if (user) {
       const transactionsRef = collection(db, "users", user.uid, "transactions");
@@ -127,7 +127,7 @@ const Budget = () => {
             ...doc.data(),
           }));
           setTransactions(updatedTransactions);
-          setLoading(false);
+          setLoading(false); // Set loading to false once data is fetched
         },
         (error) => {
           console.error("Error fetching transactions: ", error);
@@ -135,26 +135,26 @@ const Budget = () => {
         }
       );
 
-      // Cleanup subscription on component unmount
+      // Cleanup the subscription on unmount
       return () => unsubscribe();
     }
   };
-  
-  // Function to fetch the weekly budget
+
+  // Fetch the current weekly budget from Firestore
   const fetchWeeklyBudget = async () => {
     try {
       if (user) {
-        // Reference to a document within the weeklyBudget collection
+        // Reference to the weekly budget document in Firestore
         const budgetDocRef = doc(db, "users", user.uid, "weeklyBudget", "currentBudget");
         const budgetDoc = await getDoc(budgetDocRef);
 
         if (budgetDoc.exists()) {
           const budgetData = budgetDoc.data();
-          setWeeklyBudget(budgetData.amount || 0); // Get the amount field
+          setWeeklyBudget(budgetData.amount || 0); // Set the weekly budget value or default to 0
         } else {
           console.log("No weekly budget set in Firestore.");
         }
-        setLoading(false);
+        setLoading(false); // Set loading to false once budget is fetched
       }
     } catch (error) {
       console.error("Error fetching weekly budget:", error);
@@ -164,17 +164,17 @@ const Budget = () => {
 
   useEffect(() => {
     if (user) {
-      fetchWeeklyBudget();
-      fetchTransactions();
+      fetchWeeklyBudget(); // Fetch the weekly budget
+      fetchTransactions(); // Fetch transactions data
     }
   }, [user]);
 
-  // Calculate total expenses
+  // Calculate total expenses from transactions
   const totalExpenses = transactions.reduce((total, transaction) => total + transaction.amount, 0);
-  const warningThreshold = weeklyBudget * 0.85; // 85% of the weekly budget
-  const hasExceededBudget = totalExpenses > weeklyBudget;
+  const warningThreshold = weeklyBudget * 0.85; // Set a warning threshold (85% of weekly budget)
+  const hasExceededBudget = totalExpenses > weeklyBudget; // Check if budget has been exceeded
 
-  // Prepare chart data
+  // Prepare chart data based on transaction categories
   const transactionCategories = [...new Set(transactions.map((t) => t.category))];
   const chartData = {
     labels: transactionCategories,
@@ -186,12 +186,12 @@ const Budget = () => {
             .filter((t) => t.category === category)
             .reduce((sum, t) => sum + t.amount, 0)
         ),
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"],
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"], // Colors for each category
       },
     ],
   };
 
-  // If loading, show a loading spinner
+  // If data is still loading, show a loading spinner
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
