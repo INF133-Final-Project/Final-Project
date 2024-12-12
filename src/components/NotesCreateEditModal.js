@@ -19,7 +19,7 @@ const NotesCreateEditModal = ({
     deleteNote,
 }) => {
     if(!isOpen) return null;
-
+    // Formatting for Creating or Editing a note
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-700">
           <div
@@ -32,6 +32,7 @@ const NotesCreateEditModal = ({
             <h2 className="text-2xl font-semibold mb-4">
               {editIndex !== null ? "Edit Note" : "Add New Note"}
             </h2>
+            {/* Note title */}
             <input
               type="text"
               value={newTitle}
@@ -39,6 +40,8 @@ const NotesCreateEditModal = ({
               placeholder="Enter Title"
               className="w-full p-2 mb-4 rounded bg-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
+
+            {/* Note body with toolbar */}
             <ReactQuill
               type="text"
               value={newNote}
@@ -56,6 +59,8 @@ const NotesCreateEditModal = ({
               }}
               className="w-full p-4 mb-4 rounded bg-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
+
+            {/* Selecting a tag */}
             <h3 className="text-1xl mb-2">Select a Tag</h3>
             <select
               value={tag}
@@ -69,6 +74,7 @@ const NotesCreateEditModal = ({
               
             </select>
 
+            {/* Deleting a note */}
             <div className="flex justify-end items-center space-x-2">
               {editIndex !== null && (
                 <button

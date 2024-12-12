@@ -16,9 +16,18 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import NotesCreateEditModal from "../components/NotesCreateEditModal";
-import { Input } from "postcss";
 import { BsSearch } from 'react-icons/bs';
 
+/**
+ * Note.js - This component displays and filters the user's notes.
+ *
+ * Features:
+ * - Allows users to create, edit, and delete notes with a modal interface.
+ * - Supports a tag system and displays notes with corresponding styles.
+ * - Includes a search function that will find notes based on their title.
+ * - Provides error handling for fields not filled in.
+ * - Fully responsive design for optimal usability on both mobile and desktop devices.
+ */
 
 const Note = () => {
   const [notes, setNotes] = useState([]);
@@ -36,6 +45,10 @@ const Note = () => {
 
   const [user] = useAuthState(auth);
   
+  /**
+   * Opens the modal for creating or editing a note.
+   * index - The index of the note to edit (null for creating a new note).
+   */
   const openModal = (index = null) => {
     // Opening a previously existing note
     if (index !== null) {
@@ -59,7 +72,7 @@ const Note = () => {
     setTimeout(() => setIsAnimating(true), 0);
   };
 
-  // closing the right side of the page
+  // closing the modal
   const closeModal = () => {
     setIsAnimating(false);
     setTimeout(() => setIsModalOpen(false), 700);
@@ -91,8 +104,10 @@ const Note = () => {
           "notes",
           notes[editIndex].id
         );
+        // update an existing note
         await updateDoc(noteRef, noteData);
       } else {
+        // add a new note
         await addDoc(collection(db, "users", user.uid, "notes"), noteData);
       }
       closeModal();
@@ -107,7 +122,6 @@ const Note = () => {
     if (editIndex !== null && user) {
       const noteRef = doc(db, "users", user.uid, "notes", notes[editIndex].id);
       await deleteDoc(noteRef);
-
       closeModal();
     }
   };
@@ -153,6 +167,9 @@ const Note = () => {
     }
   };
 
+  /**
+   * Fetches notes from Firestore and listens for updates.
+   */
   useEffect(() => {
     if (user) {
       const notesRef = collection(db, "users", user.uid, "notes");
@@ -177,7 +194,8 @@ const Note = () => {
       return () => unsubscribe();
     }
   }, [user]);
-
+  
+  // Display a loading spinner while tasks are being fetched
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -187,11 +205,14 @@ const Note = () => {
   }
 
   return (
+    
     <div
       className="flex flex-col items-center justify-center rounded-lg bg-gray-400 mx-3 mt-5 text-gray-900 px-4 "
       style={{ height: "calc(100vh - 4.5rem)" }}
     >
       <h1 className="text-4xl font-black mt-10 mb-5 text-white"></h1>
+
+      {/* Filter Search Bar */}
       <div className="w-full max-w-2xl mb-5 h-auto y-auto"
         >
         <div style={{ display: "flex", alignItems: "center"}}>
@@ -206,6 +227,8 @@ const Note = () => {
         <div>
           {filteredNotes.map((note) => {
             const originalIndex = notes.findIndex((n) => n.id === note.id);
+
+            {/* Returns the dates on the notes */}
             const newDate = new Date(note.edit).toLocaleString("en-US", {
               year: "numeric",
               month: "short",
@@ -213,7 +236,8 @@ const Note = () => {
               hour: "2-digit",
               minute: "2-digit",
             });
-
+            
+            {/* Returns a list of filtered notes */}
             return (
               <li
               key={note.id}
@@ -240,7 +264,8 @@ const Note = () => {
         </div>
         
       </div>
-
+        
+      {/* The list of notes */}
       <div className="w-full max-w-2xl mb-5 h-full overflow-y-auto">
         {notes.length > 0 ? (
           <ul className="space-y-4">
@@ -286,7 +311,9 @@ const Note = () => {
             })}
           </ul>
         ) : (
+          
           <p className="text-center font-bold text-white mt-20">
+            {/* If no notes are created yet */}
             No notes yet!!
           </p>
         )}
