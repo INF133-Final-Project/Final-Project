@@ -19,9 +19,12 @@ const Container = ({
   const [nav, setNav] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState("Tasks");
 
   const handleNav = (navNumber) => {
+    const pageLabels = ["Dashboard", "Tasks", "Note", "Budget"];
     setNav(navNumber);
+    setCurrentPage(pageLabels[navNumber]); // Update the current page label
     setIsOpen(false);
   };
 
@@ -97,6 +100,9 @@ const Container = ({
             <Bars3Icon className="w-6 h-6" />
           )}
         </button>
+        <div className="flex items-center space-x-2">
+          <span className="text-md font-bold">{currentPage}</span> {/* Current page name */}
+        </div>
         <div className="flex space-x-3">
           <img
             src={profile}
@@ -119,6 +125,7 @@ const Container = ({
           isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         } bg-gray-800 text-white flex flex-col items-center space-y-4 md:hidden`}
       >
+        <div className="w-full border-b border-gray-600 text-center py-2"></div>
         <NavItem label="Dashboard" navNumber={0} />
         <NavItem label="Tasks" navNumber={1} />
         <NavItem label="Note" navNumber={2} />

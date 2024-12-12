@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
+import DOMPurify from "dompurify";
 import { db, auth } from "../firebaseConfig";
 import ErrorModal from "../components/ErrorModal";
 import {
@@ -15,6 +16,9 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import NotesCreateEditModal from "../components/NotesCreateEditModal";
+import { Input } from "postcss";
+import { BsSearch } from 'react-icons/bs';
+import { BiAlignMiddle } from "react-icons/bi";
 
 
 const Note = () => {
@@ -23,6 +27,8 @@ const Note = () => {
   const [newTitle, setNewTitle] = useState("");
   const [lastEdited, setLastEdited] = useState("");
   const [tag, setTag] = useState("Tag1");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredNotes, setFilteredNotes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -32,17 +38,21 @@ const Note = () => {
   const [user] = useAuthState(auth);
   
   const openModal = (index = null) => {
+    // Opening a previously existing note
     if (index !== null) {
       const note = notes[index];
       setNewTitle(note.title);
-      setNewNote(note.noteText);
-      setLastEdited(note.edit);
+      setNewNote(note.text || "");
+      setLastEdited(note.edit || Date.now());
       setTag(note.tag);
       setEditIndex(index);
-    } else {
+    } 
+    
+    // Creating a new note
+    else {
       setNewTitle("");
       setNewNote("");
-      setLastEdited("");
+      setLastEdited(Date.now());
       setTag("");
       setEditIndex(null);
     }
@@ -50,19 +60,23 @@ const Note = () => {
     setTimeout(() => setIsAnimating(true), 0);
   };
 
+  // closing the right side of the page
   const closeModal = () => {
     setIsAnimating(false);
     setTimeout(() => setIsModalOpen(false), 700);
   };
-
+  // closing the error modal
   const closeErrorModal = () => {
     setErrorModal(false);
   };
 
+  // creating or editing an existing note
   const addOrEditNote = async () => {
+    // if the user has filled in all fields
     if(newTitle.trim() && newNote.trim() && lastEdited && user) {
+      // grab the time the user pressed "Confirm"
       const currentStamp = Date.now();
-
+      //update the title, text, last edited, and tag information
       const noteData = {
         title: newTitle,
         text: newNote,
@@ -89,6 +103,7 @@ const Note = () => {
     }
   };
 
+  // deleting a note 
   const deleteNote = async () => {
     if (editIndex !== null && user) {
       const noteRef = doc(db, "users", user.uid, "notes", notes[editIndex].id);
@@ -98,6 +113,20 @@ const Note = () => {
     }
   };
 
+  // function that filters through the notes by title
+  function handleSearch() {
+    if(searchQuery === "") {
+      setFilteredNotes(notes);
+    }
+    else{
+      const filterBySearch = notes.filter((note) =>
+        note.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredNotes(filterBySearch);
+    }
+  }
+
+  // sets the border of the note to the color of the tag
   const getBorderColor = (tag) => {
     switch (tag) {
       case "Tag1":
@@ -111,6 +140,7 @@ const Note = () => {
     }
   };
 
+  // sets the tag to the color corresponding to it
   const getFontColor = (tag) => {
     switch (tag) {
       case "Tag1":
@@ -162,7 +192,55 @@ const Note = () => {
       className="flex flex-col items-center justify-center rounded-lg bg-gray-400 mx-3 mt-5 text-gray-900 px-4 "
       style={{ height: "calc(100vh - 4.5rem)" }}
     >
-      <h1 className="text-4xl font-black mt-10 mb-5 text-white">Notes List</h1>
+      <h1 className="text-4xl font-black mt-10 mb-5 text-white"></h1>
+
+      // search bar -- this is where i'm having trouble! 
+      <div className="w-full max-w-2xl mb-5 h-auto y-auto"
+        >
+        <div style={{ display: "flex", alignItems: "center"}}>
+          <input className="w-full p-2 mb-4 rounded bg-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onChange={(e) => setSearchQuery(e.target.value)} 
+            placeholder="Search notes"
+            style={{ flex: 1, marginRight: "8px" }}></input>
+          
+          // this is the search button
+          <BsSearch 
+            onClick={handleSearch} 
+            style={{ cursor: "pointer" }}/>
+        </div>
+        <div>
+          {filteredNotes.map((note) => (
+            <div key={note.id}
+            className="w-full max-w-2xl mb-5 h-full overflow-y-auto">
+              <li
+                className={`bg-gray-100 p-3 rounded-md shadow-md flex flex-col border-r-8 ${getBorderColor(
+                  note.tag
+                )} cursor-pointer hover:bg-gray-300 transition duration-200`}
+                >
+                <div className="flex items-center">
+                    <div className="flex flex-col ml-2 flex-grow">
+                      <span style={{fontWeight: 'bold'}}>
+                        {note.title}
+                      </span>
+                      <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(note.text) }}/>  
+                      <p className="text-xs text-gray-500 mt-1 ">
+                        // i'm also struggling having the date show up
+                        {note.currentStamp} | {" "}
+                        <span
+                          className={`font-bold ${getFontColor(
+                            note.tag
+                          )} `}
+                        >
+                          {note.tag}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  </li>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div className="w-full max-w-2xl mb-5 h-full overflow-y-auto">
         {notes.length > 0 ? (
@@ -172,6 +250,8 @@ const Note = () => {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
               });
 
               return (
@@ -187,11 +267,9 @@ const Note = () => {
                       <span style={{fontWeight: 'bold'}}>
                         {note.title}
                       </span>
-                      <span>
-                        {note.text}
-                      </span>
+                      <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(note.text) }}/>  
                       <p className="text-xs text-gray-500 mt-1 ">
-                        {lastEdited}/{" "}
+                        {lastEdited} | {" "}
                         <span
                           className={`font-bold ${getFontColor(
                             note.tag
@@ -218,7 +296,7 @@ const Note = () => {
 
       <button
         onClick={() => openModal()}
-        className="fixed bottom-8 right-8 bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-5 rounded-full shadow-lg transition duration-300"
+        className="fixed bottom-8 right-8 bg-blue-400 hover:bg-blue-500 text-white font-bold py-3 px-5 rounded-full shadow-lg transition duration-300"
       >
         <span className="inline sm:hidden">+</span>
         <span className="hidden sm:inline">+ Create</span>
