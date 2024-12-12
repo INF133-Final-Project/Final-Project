@@ -15,6 +15,17 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
+/**
+ * Todo.js - This component manages and displays the user's task list.
+ *
+ * Features:
+ * - Fetches tasks from Firestore, listening for real-time updates.
+ * - Allows users to create, edit, and delete tasks with a modal interface.
+ * - Supports task prioritization (High, Medium, Low) and displays tasks with corresponding styles.
+ * - Includes functionality to toggle task completion status with Firestore synchronization.
+ * - Provides error handling for invalid inputs (e.g., start date after end date).
+ * - Fully responsive design for optimal usability on both mobile and desktop devices.
+ */
 const Todo = () => {
   const [todos, setTodos] = useState([]); // Stores the list of tasks
   const [newTodo, setNewTodo] = useState(""); // Stores the text for a new or edited task

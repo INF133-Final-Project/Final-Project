@@ -9,6 +9,16 @@ import ProfileModal from "./ProfileModal";
 import Overview from "../pages/Overview";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
+/**
+ * Container.js - This component serves as the main layout container for the application.
+ *
+ * Features:
+ * - Manages navigation between different pages (Dashboard, Tasks, Note, Budget).
+ * - Supports both desktop and mobile views with responsive navigation menus.
+ * - Integrates a profile modal for viewing and editing user details.
+ * - Provides options to toggle a split view and handle user logout.
+ * - Dynamically updates the current page label and navigation state.
+ */
 const Container = ({
   toggleSplit,
   handleLogout,

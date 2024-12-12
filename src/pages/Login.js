@@ -10,6 +10,18 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import googleLogo from "../assets/googleLogo.png";
 
+/**
+ * Login.js - This component provides the login interface for users.
+ *
+ * Features:
+ * - Allows users to log in using email and password with Firebase Authentication.
+ * - Supports Google Sign-In for faster login via OAuth.
+ * - Validates user input and displays error messages for incorrect credentials or unexpected errors.
+ * - Redirects authenticated users to the dashboard automatically.
+ * - Saves user profile information to Firestore after Google Sign-In.
+ * - Includes a link to the signup page for new users.
+ * - Fully responsive design for both mobile and desktop views.
+ */
 const Login = () => {
   const [email, setEmail] = useState(""); // State to hold the user's email input
   const [password, setPassword] = useState(""); // State to hold the user's password input

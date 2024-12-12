@@ -25,6 +25,18 @@ const saveUserInfo = async (userId, firstName, lastName, email) => {
   }
 };
 
+/**
+ * SignUp.js - This component provides the user registration interface for the application.
+ *
+ * Features:
+ * - Collects user details: first name, last name, email, and password.
+ * - Validates email and password confirmation before registration.
+ * - Registers users with Firebase Authentication.
+ * - Saves user information (name, email) to Firestore upon successful registration.
+ * - Redirects authenticated users to the dashboard or login page as appropriate.
+ * - Displays error messages for validation issues or Firebase errors.
+ * - Responsive design for optimal experience on mobile and desktop devices.
+ */
 const SignUp = () => {
   const [firstName, setFirstName] = useState(""); // State for user's first name
   const [lastName, setLastName] = useState(""); // State for user's last name

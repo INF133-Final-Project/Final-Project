@@ -1,5 +1,15 @@
 import React from "react";
 
+/**
+ * ErrorModal.js - This component displays a modal for error or success messages.
+ *
+ * Features:
+ * - Conditionally renders based on the `isOpen` prop.
+ * - Displays custom messages passed through the `message` prop.
+ * - Dynamically changes styling for error (`isError` is true) or success states.
+ * - Includes a button to close the modal, triggering the `closeErrorModal` function.
+ * - Fully responsive and styled for both desktop and mobile views.
+ */
 const ErrorModal = ({ isOpen, message, closeErrorModal, isError }) => {
   if (!isOpen) return null; // Do not render the modal if it is not open
 

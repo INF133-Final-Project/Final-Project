@@ -3,6 +3,16 @@ import { Navigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebaseConfig";
 
+/**
+ * PrivateRoute.js - This component restricts access to authenticated users.
+ *
+ * Features:
+ * - Utilizes Firebase authentication to check the user's login state.
+ * - Displays a loading spinner while the authentication state is being determined.
+ * - If the user is authenticated, renders the child components.
+ * - Redirects unauthenticated users to the login page.
+ * - Ensures secure routing for private pages in the application.
+ */
 const PrivateRoute = ({ children }) => {
   const [user, loading] = useAuthState(auth);
 

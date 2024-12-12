@@ -3,6 +3,17 @@ import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
 import ErrorModal from "./ErrorModal";
 
+/**
+ * ProfileModal.js - This component provides a modal for viewing and editing the user's profile.
+ *
+ * Features:
+ * - Displays the user's email and name (first and last names).
+ * - Allows the user to update their name with validation to prevent empty fields or duplicate entries.
+ * - Integrates Firebase Firestore to save updated user information.
+ * - Uses animations for smooth modal transitions.
+ * - Displays an error modal for validation errors or save operation failures.
+ * - Handles edit mode with the ability to cancel changes before saving.
+ */
 const ProfileModal = ({ isOpen, userName, email, onClose, onSave }) => {
   const [isAnimating, setIsAnimating] = useState(false); // Controls animation state for modal
   const [openProfile, setOpenProfile] = useState(false); // Tracks modal visibility

@@ -11,6 +11,18 @@ import profile from "../assets/profile.png";
 import userLogout from "../assets/userLogout.png";
 import ProfileModal from "../components/ProfileModal";
 
+/**
+ * Dashboard.js - This component serves as the main dashboard for the application.
+ *
+ * Features:
+ * - Fetches and displays user data (name and email) from Firestore.
+ * - Provides a split view toggle for simultaneous task management and overview display.
+ * - Includes a sidebar for navigation (checklist, profile, and logout).
+ * - Manages authentication state and handles user logout.
+ * - Renders a profile modal for viewing and editing user details.
+ * - Responsive design for both desktop and mobile layouts.
+ * - Utilizes React Split for split view layout and manages dynamic component rendering.
+ */
 const Dashboard = () => {
   const [userName, setUserName] = useState(null); // Stores the user's full name
   const [split, setSplit] = useState(false); // Tracks whether split view is enabled

@@ -12,6 +12,16 @@ import PrivateRoute from "./components/PrivateRoute";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebaseConfig";
 
+/**
+ * App.js - This file serves as the main entry point for the application's routing and authentication flow.
+ *
+ * Features:
+ * - Uses React Router for managing navigation across pages (SignUp, Login, Dashboard).
+ * - Implements a loading spinner to handle Firebase authentication state initialization.
+ * - Redirects authenticated users to the dashboard and unauthenticated users to the login page.
+ * - Secures the dashboard route with a `PrivateRoute` component, ensuring only authenticated access.
+ * - Simplifies routing with conditional rendering based on user authentication state.
+ */
 function App() {
   const [user, loading] = useAuthState(auth);
 

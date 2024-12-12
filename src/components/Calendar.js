@@ -59,6 +59,16 @@ const eventStyleGetter = (event) => {
   };
 };
 
+/**
+ * Calendar.js - This component implements a customizable calendar using React Big Calendar.
+ *
+ * Features:
+ * - Displays events fetched from Firestore specific to the authenticated user.
+ * - Supports multiple views (month, week, day) with navigation.
+ * - Allows event customization with priority-based styling.
+ * - Includes a modal for viewing detailed event information.
+ * - Adapts its default view based on a split or non-split layout.
+ */
 const CustomCalendar = ({ isSplit }) => {
   const [events, setEvents] = useState([]); // Holds the calendar events
   const [selectedEvent, setSelectedEvent] = useState(null); // Tracks the currently selected event

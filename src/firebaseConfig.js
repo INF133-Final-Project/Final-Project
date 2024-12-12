@@ -2,7 +2,16 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Define the Firebase configuration object using environment variables
+/**
+ * firebaseConfig.js - This file configures and initializes Firebase services for the application.
+ *
+ * Features:
+ * - Uses environment variables to securely define Firebase configuration details.
+ * - Initializes the Firebase app with the provided configuration.
+ * - Exports Firebase Authentication (`auth`) for user authentication.
+ * - Exports Firestore (`db`) for real-time database operations.
+ * - Ensures secure and modular integration of Firebase into the application.
+ */
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,

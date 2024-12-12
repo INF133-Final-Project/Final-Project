@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 
+/**
+ * Weather.js - This component fetches and displays weather data using the WeatherAPI.
+ * It shows the current weather condition, temperature, and high/low temperatures
+ * based on the user's geolocation. It adapts the layout for split and non-split views.
+ */
 const Weather = ({ isSplit }) => {
   const [weatherData, setWeatherData] = useState(null); // State to hold the weather data
   const [loading, setLoading] = useState(true); // State to track loading status

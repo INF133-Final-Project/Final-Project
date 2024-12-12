@@ -1,5 +1,16 @@
 import React from "react";
 
+/**
+ * TodoCreateAndEditModal.js - This component provides a modal interface for creating or editing tasks.
+ *
+ * Features:
+ * - Displays a modal for task creation or editing based on `editIndex`.
+ * - Includes fields for task description, start date, end date, and priority selection.
+ * - Allows task deletion if editing an existing task.
+ * - Provides buttons for confirming changes or canceling the operation.
+ * - Smoothly animates modal appearance and disappearance based on `isAnimating` and `isOpen`.
+ * - Ensures accessibility and responsive design for various screen sizes.
+ */
 const TodoCreateAndEditModal = ({
   isOpen,
   isAnimating,
