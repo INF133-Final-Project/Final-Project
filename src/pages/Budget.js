@@ -206,12 +206,12 @@ const Budget = () => {
       <div className="flex flex-col items-center justify-center rounded-lg bg-gray-400 mx-3 mt-5 text-white px-4" style={{ height: "calc(100vh - 4.5rem)" }}>
         
         {/* Budget Alerts */}
-        {totalExpenses >= warningThreshold && totalExpenses <= weeklyBudget && (
+        {weeklyBudget > 0 && totalExpenses >= warningThreshold && totalExpenses <= weeklyBudget && (
           <div className="warning-message bg-yellow-100 text-yellow-800 p-2 rounded-md mt-4">
             Warning: Your expenses are nearing your weekly budget!
           </div>
         )}
-        {hasExceededBudget && (
+        {weeklyBudget > 0 && hasExceededBudget && (
           <div className="exceeded-message bg-red-100 text-red-800 p-2 rounded-md mt-4">
             Alert: You have exceeded your weekly budget by ${ (totalExpenses - weeklyBudget).toFixed(2) }!
           </div>
