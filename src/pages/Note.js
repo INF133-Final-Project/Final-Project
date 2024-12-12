@@ -142,11 +142,11 @@ const Note = () => {
   // sets the border of the note to the color of the tag
   const getBorderColor = (tag) => {
     switch (tag) {
-      case "Tag1":
+      case "Work":
         return "border-red-500";
-      case "Tag2":
+      case "School":
         return "border-blue-500";
-      case "Tag3":
+      case "Personal":
         return "border-yellow-500";
       default:
         return "border-gray-500";
@@ -156,11 +156,11 @@ const Note = () => {
   // sets the tag to the color corresponding to it
   const getFontColor = (tag) => {
     switch (tag) {
-      case "Tag1":
+      case "Work":
         return "text-red-500";
-      case "Tag2":
+      case "School":
         return "text-blue-500";
-      case "Tag3":
+      case "Personal":
         return "text-yellow-500";
       default:
         return "text-gray-500";

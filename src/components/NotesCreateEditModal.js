@@ -66,9 +66,9 @@ const NotesCreateEditModal = ({
               className="w-full p-2 mb-4 rounded bg-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <option value="Empty"> </option>
-              <option value="Tag1">Tag1</option>
-              <option value="Tag2">Tag2</option>
-              <option value="Tag3">Tag3</option>
+              <option value="Work">Work</option>
+              <option value="School">School</option>
+              <option value="Personal">Personal</option>
               
             </select>
 
