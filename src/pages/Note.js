@@ -16,7 +16,6 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import NotesCreateEditModal from "../components/NotesCreateEditModal";
-import { Input } from "postcss";
 import { BsSearch } from "react-icons/bs";
 
 const Note = () => {

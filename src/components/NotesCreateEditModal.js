@@ -10,8 +10,6 @@ const NotesCreateEditModal = ({
   setNewNote,
   newTitle,
   setNewTitle,
-  lastEdited,
-  setLastEdited,
   tag,
   setTag,
   closeModal,
