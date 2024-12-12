@@ -9,6 +9,16 @@ import ProfileModal from "./ProfileModal";
 import Overview from "../pages/Overview";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
+/**
+ * Container.js - This component serves as the main layout container for the application.
+ *
+ * Features:
+ * - Manages navigation between different pages (Dashboard, Tasks, Note, Budget).
+ * - Supports both desktop and mobile views with responsive navigation menus.
+ * - Integrates a profile modal for viewing and editing user details.
+ * - Provides options to toggle a split view and handle user logout.
+ * - Dynamically updates the current page label and navigation state.
+ */
 const Container = ({
   toggleSplit,
   handleLogout,
@@ -16,11 +26,12 @@ const Container = ({
   auth,
   fetchUserData,
 }) => {
-  const [nav, setNav] = useState(1);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState("Tasks");
+  const [nav, setNav] = useState(1); // Tracks current navigation tab
+  const [isOpen, setIsOpen] = useState(false); // Manages mobile navigation menu visibility
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); // Controls profile modal visibility
+  const [currentPage, setCurrentPage] = useState("Tasks"); // Tracks current page label
 
+  // Handle navigation and update the current page
   const handleNav = (navNumber) => {
     const pageLabels = ["Dashboard", "Tasks", "Note", "Budget"];
     setNav(navNumber);
@@ -28,16 +39,19 @@ const Container = ({
     setIsOpen(false);
   };
 
+  // Toggle profile modal visibility
   const toggleProfileModal = () => {
     setIsProfileModalOpen((prev) => !prev);
   };
 
+  // Define navigation items for the header
   const navItems = [
     { id: 1, label: "Tasks" },
     { id: 2, label: "Note" },
     { id: 3, label: "Budget" },
   ];
 
+  // Component for individual navigation items
   const NavItem = ({ label, navNumber }) => (
     <div
       onClick={() => handleNav(navNumber)}
@@ -101,7 +115,8 @@ const Container = ({
           )}
         </button>
         <div className="flex items-center space-x-2">
-          <span className="text-md font-bold">{currentPage}</span> {/* Current page name */}
+          <span className="text-md font-bold">{currentPage}</span>{" "}
+          {/* Current page name */}
         </div>
         <div className="flex space-x-3">
           <img

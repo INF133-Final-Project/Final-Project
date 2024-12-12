@@ -15,20 +15,35 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
+/**
+ * Todo.js - This component manages and displays the user's task list.
+ *
+ * Features:
+ * - Fetches tasks from Firestore, listening for real-time updates.
+ * - Allows users to create, edit, and delete tasks with a modal interface.
+ * - Supports task prioritization (High, Medium, Low) and displays tasks with corresponding styles.
+ * - Includes functionality to toggle task completion status with Firestore synchronization.
+ * - Provides error handling for invalid inputs (e.g., start date after end date).
+ * - Fully responsive design for optimal usability on both mobile and desktop devices.
+ */
 const Todo = () => {
-  const [todos, setTodos] = useState([]);
-  const [newTodo, setNewTodo] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [priority, setPriority] = useState("Low");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
+  const [todos, setTodos] = useState([]); // Stores the list of tasks
+  const [newTodo, setNewTodo] = useState(""); // Stores the text for a new or edited task
+  const [startDate, setStartDate] = useState(""); // Stores the start date of a task
+  const [endDate, setEndDate] = useState(""); // Stores the end date of a task
+  const [priority, setPriority] = useState("Low"); // Stores the priority of a task
+  const [isModalOpen, setIsModalOpen] = useState(false); // Tracks the state of the task modal
+  const [isAnimating, setIsAnimating] = useState(false); // Controls animation for the modal
+  const [editIndex, setEditIndex] = useState(null); // Tracks the index of the task being edited
+  const [loading, setLoading] = useState(true); // Tracks the loading state
+  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" }); // Tracks the state of the error modal
 
-  const [user] = useAuthState(auth);
+  const [user] = useAuthState(auth); // Tracks the authenticated user
 
+  /**
+   * Opens the modal for creating or editing a task.
+   * index - The index of the task to edit (null for creating a new task).
+   */
   const openModal = (index = null) => {
     if (index !== null) {
       const todo = todos[index];
@@ -48,15 +63,24 @@ const Todo = () => {
     setTimeout(() => setIsAnimating(true), 0);
   };
 
+  /**
+   * Closes the modal with an animation.
+   */
   const closeModal = () => {
     setIsAnimating(false);
     setTimeout(() => setIsModalOpen(false), 700);
   };
 
+  /**
+   * Closes the error modal.
+   */
   const closeErrorModal = () => {
     setErrorModal(false);
   };
 
+  /**
+   * Adds a new task or updates an existing one in Firestore.
+   */
   const addOrEditTodo = async () => {
     if (newTodo.trim() && startDate && endDate && user) {
       if (new Date(startDate) > new Date(endDate)) {
@@ -83,9 +107,9 @@ const Todo = () => {
           "todos",
           todos[editIndex].id
         );
-        await updateDoc(todoRef, todoData);
+        await updateDoc(todoRef, todoData); // Update an existing task
       } else {
-        await addDoc(collection(db, "users", user.uid, "todos"), todoData);
+        await addDoc(collection(db, "users", user.uid, "todos"), todoData); // Add a new task
       }
       closeModal();
     } else {
@@ -93,6 +117,9 @@ const Todo = () => {
     }
   };
 
+  /**
+   * Deletes a task from Firestore.
+   */
   const deleteTodo = async () => {
     if (editIndex !== null && user) {
       const todoRef = doc(db, "users", user.uid, "todos", todos[editIndex].id);
@@ -104,6 +131,10 @@ const Todo = () => {
     }
   };
 
+  /**
+   * Toggles the completion status of a task.
+   * index - The index of the task to toggle.
+   */
   const toggleComplete = async (index) => {
     const updatedTodos = [...todos];
     const todo = updatedTodos[index];
@@ -111,12 +142,17 @@ const Todo = () => {
 
     if (user) {
       const todoRef = doc(db, "users", user.uid, "todos", todo.id);
-      await updateDoc(todoRef, { completed: todo.completed });
+      await updateDoc(todoRef, { completed: todo.completed }); // Update the completed status in Firestore
     }
 
     // setTodos(updatedTodos);
   };
 
+  /**
+   * Returns the border color for a task based on its priority.
+   * priority - The priority of the task.
+   * strings - The corresponding border color class.
+   */
   const getBorderColor = (priority) => {
     switch (priority) {
       case "High":
@@ -130,6 +166,11 @@ const Todo = () => {
     }
   };
 
+  /**
+   * Returns the font color for a task based on its priority.
+   * priority - The priority of the task.
+   * strings - The corresponding font color class.
+   */
   const getFontColor = (priority) => {
     switch (priority) {
       case "High":
@@ -143,6 +184,9 @@ const Todo = () => {
     }
   };
 
+  /**
+   * Fetches tasks from Firestore and listens for updates.
+   */
   useEffect(() => {
     if (user) {
       const todosRef = collection(db, "users", user.uid, "todos");
@@ -155,7 +199,7 @@ const Todo = () => {
             id: doc.id,
             ...doc.data(),
           }));
-          setTodos(updatedTodos);
+          setTodos(updatedTodos); // Update the tasks state with the fetched data
           setLoading(false);
         },
         (error) => {
@@ -164,10 +208,11 @@ const Todo = () => {
         }
       );
 
-      return () => unsubscribe();
+      return () => unsubscribe(); // Cleanup the listener on unmount
     }
   }, [user]);
 
+  // Display a loading spinner while tasks are being fetched
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -231,7 +276,7 @@ const Todo = () => {
                         {todo.text}
                       </span>
                       <p className="text-xs text-gray-500 mt-1 ">
-                        {startDate} ~ {endDate} /{" "}
+                        {startDate} ~ {endDate} |{" "}
                         <span
                           className={`font-bold ${getFontColor(
                             todo.priority

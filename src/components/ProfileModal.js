@@ -3,46 +3,75 @@ import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
 import ErrorModal from "./ErrorModal";
 
+/**
+ * ProfileModal.js - This component provides a modal for viewing and editing the user's profile.
+ *
+ * Features:
+ * - Displays the user's email and name (first and last names).
+ * - Allows the user to update their name with validation to prevent empty fields or duplicate entries.
+ * - Integrates Firebase Firestore to save updated user information.
+ * - Uses animations for smooth modal transitions.
+ * - Displays an error modal for validation errors or save operation failures.
+ * - Handles edit mode with the ability to cancel changes before saving.
+ */
 const ProfileModal = ({ isOpen, userName, email, onClose, onSave }) => {
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [openProfile, setOpenProfile] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
+  const [isAnimating, setIsAnimating] = useState(false); // Controls animation state for modal
+  const [openProfile, setOpenProfile] = useState(false); // Tracks modal visibility
+  const [isEditing, setIsEditing] = useState(false); // Tracks edit mode
+  const [firstName, setFirstName] = useState(""); // Stores first name input
+  const [lastName, setLastName] = useState(""); // Stores last name input
+  const [isSaving, setIsSaving] = useState(false); // Tracks saving state
+  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" }); // Manages error modal state
 
+  /*
+   * Handles the modal's open/close state and initializes name fields.
+   * Runs whenever `isOpen` or `userName` changes.
+   */
   useEffect(() => {
     if (isOpen) {
-      setOpenProfile(true);
-      setTimeout(() => setIsAnimating(true), 10);
-      const nameParts = userName.split(" ");
-      setFirstName(nameParts.slice(0, -1).join(" ") || "");
-      setLastName(nameParts.slice(-1).join(" ") || "");
+      setOpenProfile(true); // Open modal
+      setTimeout(() => setIsAnimating(true), 10); // Start animation
+      const nameParts = userName.split(" "); // Split name into parts
+      setFirstName(nameParts.slice(0, -1).join(" ") || ""); // Extract first name
+      setLastName(nameParts.slice(-1).join(" ") || ""); // Extract last name
     } else {
-      setIsAnimating(false);
-      setTimeout(() => setOpenProfile(false), 700);
+      setIsAnimating(false); // Stop animation
+      setTimeout(() => setOpenProfile(false), 700); // Close modal after animation
     }
   }, [isOpen, userName]);
 
-  if (!openProfile) return null;
+  if (!openProfile) return null; // Do not render modal if it's closed
 
+  /**
+   * Enables edit mode.
+   */
   const handleEdit = () => {
-    setIsEditing(true);
+    setIsEditing(true); // Enable edit mode
   };
 
+  /**
+   * Closes the error modal.
+   */
   const closeErrorModal = () => {
-    setErrorModal(false);
+    setErrorModal(false); // Close error modal
   };
 
+  /**
+   * Cancels edit mode and restores the original name values.
+   */
   const handleCancelEdit = () => {
-    setIsEditing(false);
+    setIsEditing(false); // Exit edit mode
     const nameParts = userName.split(" ");
-    setFirstName(nameParts.slice(0, -1).join(" ") || "");
-    setLastName(nameParts.slice(-1).join(" ") || "");
+    setFirstName(nameParts.slice(0, -1).join(" ") || ""); // Reset first name
+    setLastName(nameParts.slice(-1).join(" ") || ""); // Reset last name
   };
 
+  /**
+   * Saves the updated name to Firestore.
+   * Validates the input before saving and shows appropriate error messages if necessary.
+   */
   const handleSave = async () => {
+    // Validate input
     if (!firstName.trim() || !lastName.trim()) {
       setErrorModal({
         isOpen: true,
@@ -51,6 +80,8 @@ const ProfileModal = ({ isOpen, userName, email, onClose, onSave }) => {
       });
       return;
     }
+
+    // Check if the new name is the same as the current name
     const nameParts = userName.split(" ");
     if (
       firstName.trim() === nameParts.slice(0, -1).join(" ") &&
@@ -64,20 +95,20 @@ const ProfileModal = ({ isOpen, userName, email, onClose, onSave }) => {
       return;
     }
 
-    setIsSaving(true);
+    setIsSaving(true); // Start saving state
     try {
-      const userDocRef = doc(db, "users", auth.currentUser.uid);
+      const userDocRef = doc(db, "users", auth.currentUser.uid); // Reference to user's Firestore document
       await updateDoc(userDocRef, {
         firstName,
         lastName,
-      });
+      }); // Update name in Firestore
       setErrorModal({
         isOpen: true,
         message: "Name updated successfully!",
         isError: false,
       });
-      setIsEditing(false);
-      onSave();
+      setIsEditing(false); // Exit edit mode
+      onSave(); // Refresh parent data
     } catch (error) {
       console.error("Error updating name:", error);
       setErrorModal({
@@ -86,7 +117,7 @@ const ProfileModal = ({ isOpen, userName, email, onClose, onSave }) => {
         isError: true,
       });
     } finally {
-      setIsSaving(false);
+      setIsSaving(false); // Stop saving state
     }
   };
 
